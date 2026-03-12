@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Photo Gallery - North Star Maintenance</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .gallery-header {
+      text-align: center;
+      padding: 40px 0 20px;
+    }
+    
+    .category-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0 40px;
+      padding: 0 18px;
+    }
+    
+    .filter-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .filter-btn:hover {
+      background: rgba(255,255,255,.08);
+    }
+    
+    .filter-btn.active {
+      background: var(--brand);
+      border-color: var(--brand2);
+      color: white;
+    }
+    
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 0 18px;
+      max-width: var(--max);
+      margin: 0 auto 60px;
+    }
+    
+    .photo-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .photo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    
+    .photo-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .photo-info {
+      padding: 16px;
+    }
+    
+    .photo-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      color: var(--brand2);
+    }
+    
+    .photo-info p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .photo-category-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      padding: 4px 10px;
+      background: rgba(47,107,79,.2);
+      border: 1px solid var(--brand);
+      border-radius: 6px;
+      color: var(--brand2);
+    }
+    
+    .no-photos {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,.95);
+      z-index: 999;
+      padding: 20px;
+    }
+    
+    .lightbox.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 80vh;
+      position: relative;
+    }
+    
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .lightbox-info {
+      text-align: center;
+      margin-top: 20px;
+      max-width: 600px;
+    }
+    
+    .lightbox-info h3 {
+      color: var(--brand2);
+      margin: 0 0 8px 0;
+    }
+    
+    .lightbox-info p {
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .lightbox-close:hover {
+      background: rgba(255,255,255,.2);
+    }
+    
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .lightbox-nav:hover {
+      background: rgba(255,255,255,.2);
+    }
+    
+    .lightbox-prev {
+      left: 20px;
+    }
+    
+    .lightbox-next {
+      right: 20px;
+    }
+    
+    @media(max-width: 680px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      
+      .lightbox-prev {
+        left: 10px;
+      }
+      
+      .lightbox-next {
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="North Star Maintenance" class="logo" width="50" height="50">
+      <span>North Star Maintenance</span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="index.html#services">Services</a>
+      <a class="btn" href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="gallery-header">
+    <h1 id="galleryTitle">Our Work</h1>
+    <p class="sub" id="gallerySubtitle">Browse our completed projects and see the quality we deliver</p>
+  </div>
+
+  <div class="category-filter" id="categoryFilter">
+    <button class="filter-btn active" data-category="all">All Projects</button>
+    <button class="filter-btn" data-category="lawn-care">Lawn Care</button>
+    <button class="filter-btn" data-category="pressure-washing">Pressure Washing</button>
+    <button class="filter-btn" data-category="junk-removal">Junk Removal</button>
+    <button class="filter-btn" data-category="handyman">Handyman</button>
+    <button class="filter-btn" data-category="window-washing">Window Washing</button>
+    <button class="filter-btn" data-category="snow-removal">Snow Removal</button>
+    <button class="filter-btn" data-category="lake-property">Lake Property</button>
+    <button class="filter-btn" data-category="before-after">Before & After</button>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Photos load here -->
+  </div>
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">×</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+  <div class="lightbox-info">
+    <h3 id="lightboxTitle"></h3>
+    <p id="lightboxDesc"></p>
+  </div>
+</div>
+
+<footer>
+  © <span id="year"></span> North Star Maintenance
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+let allPhotos = [];
+let filteredPhotos = [];
+let currentPhotoIndex = 0;
+let currentCategory = 'all';
+
+// Category display names
+const categoryNames = {
+  'all': 'All Projects',
+  'lawn-care': 'Lawn Care',
+  'pressure-washing': 'Pressure Washing',
+  'junk-removal': 'Junk Removal',
+  'handyman': 'Handyman Services',
+  'window-washing': 'Window Washing',
+  'snow-removal': 'Snow Removal',
+  'lake-property': 'Lake Property Maintenance',
+  'before-after': 'Before & After',
+  'deck-dock': 'Deck & Dock Work',
+  'gutter-cleaning': 'Gutter Cleaning',
+  'spring-cleanup': 'Spring Cleanup',
+  'fall-cleanup': 'Fall Cleanup',
+  'landscaping': 'Landscaping',
+  'property-maintenance': 'Property Maintenance',
+  'rental-property': 'Rental Property Services',
+  'seasonal': 'Seasonal Work',
+  'commercial': 'Commercial Projects',
+  'general': 'Other'
+};
+
+// Load photos
+function loadPhotos() {
+  allPhotos = JSON.parse(localStorage.getItem('galleryPhotos')) || [];
+  
+  if (allPhotos.length === 0) {
+    fetch('./gallery-data.json')
+      .then(r => r.json())
+      .then(data => {
+        allPhotos = data.photos || [];
+        renderGallery();
+      })
+      .catch(() => {
+        document.getElementById('galleryGrid').innerHTML = `
+          <div class="no-photos">
+            <h3>No photos yet</h3>
+            <p>Check back soon to see our completed projects!</p>
+            <a href="admin.html" class="btn primary" style="margin-top:20px;">Add Photos</a>
+          </div>
+        `;
+      });
+  } else {
+    renderGallery();
+  }
+}
+
+// Check for category parameter in URL
+const urlParams = new URLSearchParams(window.location.search);
+const categoryParam = urlParams.get('category');
+if (categoryParam) {
+  currentCategory = categoryParam;
+  document.getElementById('galleryTitle').textContent = categoryNames[categoryParam] || 'Our Work';
+  document.getElementById('gallerySubtitle').textContent = `View our ${(categoryNames[categoryParam] || 'work').toLowerCase()} projects`;
+}
+
+// Filter photos by category
+function filterPhotos(category) {
+  currentCategory = category;
+  
+  // Update filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.category === category) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Update title
+  document.getElementById('galleryTitle').textContent = categoryNames[category] || 'Our Work';
+  
+  renderGallery();
+}
+
+// Render gallery
+function renderGallery() {
+  const grid = document.getElementById('galleryGrid');
+  
+  // Filter photos
+  if (currentCategory === 'all') {
+    filteredPhotos = allPhotos;
+  } else {
+    filteredPhotos = allPhotos.filter(p => p.category === currentCategory);
+  }
+  
+  if (filteredPhotos.length === 0) {
+    grid.innerHTML = `
+      <div class="no-photos" style="grid-column: 1/-1;">
+        <h3>No photos in this category yet</h3>
+        <p>Check out other categories or add your first photo!</p>
+        <a href="admin.html" class="btn primary" style="margin-top:20px;">Add Photos</a>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = filteredPhotos.map((photo, index) => `
+    <div class="photo-card" onclick="openLightbox(${index})">
+      <img src="${escapeHtml(photo.imageUrl)}" alt="${escapeHtml(photo.title)}" 
+           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23333%22 width=%22300%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22%3EImage Unavailable%3C/text%3E%3C/svg%3E'">
+      <div class="photo-info">
+        <h3>${escapeHtml(photo.title)}</h3>
+        ${photo.description ? `<p>${escapeHtml(photo.description)}</p>` : ''}
+        <span class="photo-category-badge">${categoryNames[photo.category] || photo.category}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Escape HTML
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Lightbox functions
+function openLightbox(index) {
+  currentPhotoIndex = index;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const photo = filteredPhotos[currentPhotoIndex];
+  document.getElementById('lightboxImg').src = photo.imageUrl;
+  document.getElementById('lightboxTitle').textContent = photo.title;
+  document.getElementById('lightboxDesc').textContent = photo.description || '';
+}
+
+function prevPhoto() {
+  currentPhotoIndex = (currentPhotoIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+  updateLightbox();
+}
+
+function nextPhoto() {
+  currentPhotoIndex = (currentPhotoIndex + 1) % filteredPhotos.length;
+  updateLightbox();
+}
+
+// Event listeners
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+document.getElementById('lightboxPrev').addEventListener('click', prevPhoto);
+document.getElementById('lightboxNext').addEventListener('click', nextPhoto);
+
+// Close lightbox on background click
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeLightbox();
+  }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') prevPhoto();
+  if (e.key === 'ArrowRight') nextPhoto();
+});
+
+// Filter button click handlers
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    filterPhotos(this.dataset.category);
+  });
+});
+
+// Initialize
+loadPhotos();
+</script>
+
+</body>
+</html>

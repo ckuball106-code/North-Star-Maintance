@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes" />
+  <title>North Star Maintenance</title>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <!-- PASTE YOUR HTML BODY CONTENT HERE -->
+  <!-- Everything from <header> to </footer> -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#">
+      <img src="logo.png" alt="North Star Maintenance" class="logo">
+      <span>North Star Maintenance</span>
+    </a>
+  </div>
+  <div class="wrap">
+    <div class="nav-actions">
+      <a class="btn" href="#about">About</a>
+      <a class="btn" href="#faq">FAQ</a>
+      <button class="btn" id="cartBtn" type="button">
+        Cart <span class="badge" id="cartCount">0</span>
+      </button>
+      <span class="btn disabled" title="Shop temporarily unavailable">Shop — Being developed</span>
+      <a class="btn primary" href="#services">Get a Quote</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Emergency Services Banner -->
+  <div class="emergency-banner">
+    <div class="emergency-content">
+      <strong>🚨 Emergency Services Available</strong>
+      <span>Need urgent property maintenance? Storm damage? Call us now!</span>
+    </div>
+    <a href="tel:507-920-6409" class="btn primary" style="white-space:nowrap">Call 507-920-6409</a>
+  </div>
+
+  <section class="hero">
+    <h1>Keep your home or lake house looking its best.</h1>
+    <p class="sub">
+      We specialize in comprehensive property maintenance services including <b>lawn care</b>, <b>pressure washing</b>, <b>concrete work</b>, <b>junk removal</b>,
+      <b>handyman services</b>, <b>window washing</b>, and <b>snow removal</b>, ensuring your home, lake house, or rental property remains pristine year-round.
+    </p>
+    <a class="btn primary" href="#services">Get a Free Quote</a>
+  </section>
+
+  <section id="services">
+    <h2>Services</h2>
+    <p class="sub">Click a service to add it to your cart.</p>
+    
+    <div class="how-to-order">
+      <h3>📋 How to Get Your Quote:</h3>
+      <ol>
+        <li><strong>Click a service card below</strong> to see what's available</li>
+        <li><strong>Select the items you need</strong> from the service menu</li>
+        <li><strong>Items are added to your cart</strong> at the top right</li>
+        <li><strong>Click the Cart button</strong> when you're done selecting</li>
+        <li><strong>Fill out your contact info</strong> and submit for your free estimate!</li>
+      </ol>
+    </div>
+
+    <div class="grid3">
+      <div class="card service-card" data-service="Lawn Care" data-menu="lawn">
+        <div class="service-top">
+          <h3>Lawn Care</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Weed eating, spraying, seeding, mowing, and cleanups.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
+
+      <div class="card service-card" data-service="Pressure Washing" data-menu="pressure">
+        <div class="service-top">
+          <h3>Pressure Washing</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Driveways, siding, gutters, decks, docks, and more.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
+
+      <div class="card service-card" data-service="Junk Removal">
+        <div class="service-top">
+          <h3>Junk Removal</h3>
+          <span class="badge">Add</span>
+        </div>
+        <p class="service-desc">Garage, basement, rental, and lake property cleanouts.</p>
+        <div class="service-hint">Click to add</div>
+      </div>
+
+      <div class="card service-card" data-service="Handyman Services" data-requires-note="true">
+        <div class="service-top">
+          <h3>Handyman Services</h3>
+          <span class="badge">Add</span>
+        </div>
+        <p class="service-desc">Small repairs, installs, and punch lists.</p>
+        <div class="service-hint">Click to add</div>
+      </div>
+
+      <div class="card service-card" data-service="Window Washing" data-menu="windows">
+        <div class="service-top">
+          <h3>Window Washing</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Window size and story-based pricing.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
+
+      <div class="card service-card" data-service="Snow Removal" data-menu="snow">
+        <div class="service-top">
+          <h3>Snow Removal</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Driveway, sidewalk, and walkway clearing.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
+
+      <div class="card service-card" data-service="Concrete Work" data-menu="concrete">
+        <div class="service-top">
+          <h3>Concrete Work</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Driveways, patios, sidewalks, and repairs.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap" style="text-align:center; padding:20px 0;">
+    <a href="tel:507-920-6409" class="btn primary">Call Now: 507-920-6409</a>
+  </div>
+
+  <section id="service-details">
+    <h2>Service Details</h2>
+    <p class="sub">Learn more about our comprehensive property maintenance services.</p>
+    
+    <details class="service-detail">
+      <summary>Lawn Care</summary>
+      <div class="detail-content">
+        <p>Our lawn care services are designed to keep your property looking pristine throughout the growing season. We offer:</p>
+        <ul>
+          <li><strong>Weed Eating:</strong> Precise trimming around edges, trees, docks, and hard-to-reach areas to maintain clean lines.</li>
+          <li><strong>Spraying:</strong> Targeted weed control and fertilization to promote healthy turf growth.</li>
+          <li><strong>Seeding:</strong> Overseeding and patch repair to thicken and improve your lawn's appearance.</li>
+          <li><strong>Mowing:</strong> Professional mowing with optional edging for a polished finish.</li>
+          <li><strong>Trimming & Edging:</strong> Crisp lines along sidewalks, driveways, and landscaping beds.</li>
+          <li><strong>Spring/Fall Cleanup:</strong> Removal of leaves, sticks, and seasonal debris.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Pressure Washing</summary>
+      <div class="detail-content">
+        <p>Restore the beauty of your property's exterior surfaces with our professional pressure washing services:</p>
+        <ul>
+          <li><strong>Driveway Washing:</strong> Remove dirt, oil stains, and grime from concrete and asphalt surfaces.</li>
+          <li><strong>House Washing:</strong> Gentle cleaning of siding to remove dirt and mildew buildup.</li>
+          <li><strong>Gutter Cleaning:</strong> Clear leaves and debris to prevent water damage and maintain proper drainage.</li>
+          <li><strong>Deck/Patio Washing:</strong> Refresh outdoor living spaces for a clean, inviting appearance.</li>
+          <li><strong>Sidewalks & Steps:</strong> Improve safety and appearance of walkways.</li>
+          <li><strong>Dock/Boathouse Washing:</strong> Specialized cleaning for lakefront properties.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Junk Removal</summary>
+      <div class="detail-content">
+        <p>We provide efficient junk removal services for residential and commercial properties:</p>
+        <ul>
+          <li><strong>Garage Cleanouts:</strong> Clear out accumulated items and create organized storage space.</li>
+          <li><strong>Basement Cleanouts:</strong> Remove clutter and prepare spaces for better use.</li>
+          <li><strong>Rental Property Cleanouts:</strong> Thorough cleaning between tenants.</li>
+          <li><strong>Lake Property Cleanouts:</strong> Specialized service for seasonal and year-round lake homes.</li>
+        </ul>
+        <p>Available in multiple load sizes: Small Load ($125), ¼ Truck ($195), ½ Truck ($325), ¾ Truck ($475), Full Truck ($625).</p>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Handyman Services</summary>
+      <div class="detail-content">
+        <p>Our skilled handymen handle a wide range of repair and installation projects:</p>
+        <ul>
+          <li><strong>Small Repairs:</strong> Fix leaky faucets, doors, windows, and other household issues.</li>
+          <li><strong>Installations:</strong> Shelves, fixtures, hardware, and home improvements.</li>
+          <li><strong>Punch Lists:</strong> Complete final touches on new construction or renovations.</li>
+        </ul>
+        <p>Please provide details of your project when requesting a quote.</p>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Window Washing</summary>
+      <div class="detail-content">
+        <p>Crystal clear windows enhance your home's appearance and let in more natural light:</p>
+        <ul>
+          <li><strong>Interior & Exterior Cleaning:</strong> Thorough cleaning of all window surfaces.</li>
+          <li><strong>Screen Cleaning:</strong> Remove dust and debris from window screens.</li>
+          <li><strong>Track Cleaning:</strong> Clear tracks and frames for smooth operation.</li>
+        </ul>
+        <p>Pricing based on window size and story: Small ($8-12), Medium ($12-16), Large/Picture ($18-26).</p>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Snow Removal</summary>
+      <div class="detail-content">
+        <p>Keep your property safe and accessible during winter with our snow removal services:</p>
+        <ul>
+          <li><strong>Driveway Clearing:</strong> Prompt removal of snow to ensure safe access.</li>
+          <li><strong>Sidewalk Clearing:</strong> Clear pathways for pedestrian safety.</li>
+          <li><strong>Salting:</strong> Apply ice melt to prevent slippery conditions.</li>
+        </ul>
+        <p>Starting prices: Driveway ($50), Sidewalks ($30), Salting ($25).</p>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Concrete Work</summary>
+      <div class="detail-content">
+        <p>Professional concrete services for residential and commercial properties:</p>
+        <ul>
+          <li><strong>Driveway Installation:</strong> New concrete driveways with proper grading and reinforcement.</li>
+          <li><strong>Patio Installation:</strong> Custom concrete patios for outdoor living spaces.</li>
+          <li><strong>Sidewalk Installation:</strong> Durable sidewalks and walkways.</li>
+          <li><strong>Concrete Repair:</strong> Fix cracks, chips, and damaged sections.</li>
+          <li><strong>Concrete Overlay:</strong> Apply decorative overlay to existing concrete surfaces.</li>
+          <li><strong>Steps/Stairs:</strong> Safe and sturdy concrete steps and stairways.</li>
+        </ul>
+        <p>Pricing varies by project size and scope. Contact us for a detailed quote based on your specific needs.</p>
+      </div>
+    </details>
+  </section>
+
+  <section id="about">
+    <h2>About North Star Maintenance</h2>
+    <div class="card">
+      <p>Founded on the principles of quality workmanship and reliable service, North Star Maintenance has been serving the Slayton area and surrounding communities with pride. We understand that your home or lake property is more than just a building—it's where memories are made.</p>
+      <p>Our experienced team brings years of expertise in property maintenance, combining traditional craftsmanship with modern techniques. Whether it's maintaining your lawn through the growing season or ensuring safe access during winter storms, we're committed to being your trusted partner in property care.</p>
+      <p>We specialize in both residential homes and lake properties, understanding the unique needs each requires. Our goal is simple: keep your property looking its best so you can focus on what matters most.</p>
+    </div>
+  </section>
+
+  <section id="why-choose">
+    <h2>Why Choose North Star Property Care?</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>Reliable & Professional</h3>
+        <p>Our experienced team delivers consistent, high-quality service you can trust.</p>
+      </div>
+      <div class="card">
+        <h3>Year-Round Service</h3>
+        <p>From lawn care in summer to snow removal in winter, we're here when you need us.</p>
+      </div>
+      <div class="card">
+        <h3>Competitive Pricing</h3>
+        <p>Transparent pricing with no hidden fees. Get the best value for your property maintenance needs.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="service-area">
+    <h2>Service Area</h2>
+    <div class="card">
+      <h3 style="margin-top:0">Proudly Serving Southwest Minnesota</h3>
+      <p><strong>Based in Slayton, MN</strong> - We provide comprehensive property maintenance services throughout the surrounding area, including:</p>
+      <div class="grid3" style="margin-top:20px">
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Primary Service Area</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Slayton</li>
+            <li>Lake Shetek</li>
+            <li>Currie</li>
+            <li>Fulda</li>
+            <li>Westbrook</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Extended Service Area</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Tracy</li>
+            <li>Walnut Grove</li>
+            <li>Avoca</li>
+            <li>Iona</li>
+            <li>Chandler</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Special Services</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Lake Property Maintenance</li>
+            <li>Rental Property Care</li>
+            <li>Vacation Home Management</li>
+            <li>Commercial Properties</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:20px; font-style:italic;" class="muted">Don't see your city listed? Contact us—we may still be able to serve your area!</p>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <h2>What Our Customers Say</h2>
+    <div class="grid2">
+      <div class="card testimonial">
+        <p>"North Star Property Care transformed our lake house property. Their attention to detail and professional service is unmatched."</p>
+        <cite>- Sarah M., Lake Property Owner</cite>
+      </div>
+      <div class="card testimonial">
+        <p>"Reliable snow removal service that keeps our driveway clear and safe. Highly recommend for winter maintenance."</p>
+        <cite>- Mike R., Homeowner</cite>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <h2>Our Work</h2>
+    <p class="sub">Click on a category to see all photos from that service.</p>
+    <div class="grid3" id="galleryGrid">
+      <!-- Category cards load dynamically here -->
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+      <a href="gallery.html" class="btn primary">View Full Gallery</a>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <details class="service-detail">
+        <summary>How do I get a quote?</summary>
+        <div class="detail-content">
+          <p>Getting a quote is easy! Simply select the services you need from our Services section, add them to your cart, and submit a quote request. You can also call us directly at <a href="tel:507-920-6409">507-920-6409</a> to discuss your needs.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you offer recurring service plans?</summary>
+        <div class="detail-content">
+          <p>Yes! We offer weekly, bi-weekly, and monthly service plans for lawn care and other maintenance services. Recurring plans come with discounted rates—up to 15% off for weekly service.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What areas do you serve?</summary>
+        <div class="detail-content">
+          <p>We're based in Slayton, MN and serve the surrounding communities including Lake Shetek, Currie, Fulda, Westbrook, Tracy, and more. Contact us to confirm service availability in your area.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you provide services for lake properties?</summary>
+        <div class="detail-content">
+          <p>Absolutely! We specialize in lake property maintenance including dock washing, shoreline cleanup, seasonal opening/closing services, and regular upkeep for vacation homes.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Are you insured?</summary>
+        <div class="detail-content">
+          <p>Yes, North Star Maintenance is fully insured for your peace of mind. We take safety seriously and maintain comprehensive liability coverage.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What payment methods do you accept?</summary>
+        <div class="detail-content">
+          <p>We accept cash, checks, and major credit cards. Payment is typically due upon completion of service, though we can arrange other terms for recurring customers.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you offer emergency or same-day service?</summary>
+        <div class="detail-content">
+          <p>We understand emergencies happen! While we can't always guarantee same-day service, we do our best to accommodate urgent requests. Call us at <a href="tel:507-920-6409">507-920-6409</a> and we'll work with you.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What if I'm not satisfied with the service?</summary>
+        <div class="detail-content">
+          <p>Your satisfaction is our priority. If you're not completely happy with our work, please let us know within 48 hours and we'll make it right—guaranteed.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="seasonal-tips">
+    <h2>Seasonal Property Care Tips</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>🌱 Spring & Summer</h3>
+        <ul>
+          <li><strong>Start early:</strong> Schedule spring cleanup to remove winter debris</li>
+          <li><strong>Regular mowing:</strong> Keep grass at 2.5-3 inches for healthiest growth</li>
+          <li><strong>Pressure wash:</strong> Clean siding and decks before the season heats up</li>
+          <li><strong>Inspect:</strong> Check for winter damage and address repairs early</li>
+          <li><strong>Lake properties:</strong> Open seasonal properties and inspect docks</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🍂 Fall & Winter</h3>
+        <ul>
+          <li><strong>Fall cleanup:</strong> Remove leaves to prevent lawn damage</li>
+          <li><strong>Gutter cleaning:</strong> Clear debris before winter to prevent ice dams</li>
+          <li><strong>Winterize:</strong> Prepare lake properties for cold weather</li>
+          <li><strong>Snow prep:</strong> Set up snow removal service before the first storm</li>
+          <li><strong>Safety first:</strong> Keep walkways clear and salted for safety</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service selection modal -->
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+
+  <div class="modal" id="serviceModal">
+    <div class="modal-head">
+      <b id="modalTitle">Choose items</b>
+      <button class="iconbtn" id="modalClose" title="Close - your selections will be saved in the cart">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" id="modalSubtitle"></p>
+      <div class="modal-grid" id="modalGrid"></div>
+    </div>
+    <div class="modal-foot">
+      <div class="muted">You can add multiple items.</div>
+      <button class="btn" id="modalViewCart">View Cart</button>
+    </div>
+  </div>
+
+  <!-- Quote Request Modal -->
+  <div class="modal" id="quoteModal">
+    <div class="modal-head">
+      <b>Request a Quote</b>
+      <button class="iconbtn" id="quoteClose" title="Close quote form">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="quoteForm" action="https://formspree.io/f/xkgakedj" method="POST">
+        <div class="form-group">
+          <label for="qName">Name *</label>
+          <input type="text" id="qName" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="qPhone">Phone *</label>
+          <input type="tel" id="qPhone" name="phone" required>
+        </div>
+        <div class="form-group">
+          <label for="qEmail">Email</label>
+          <input type="email" id="qEmail" name="email">
+        </div>
+        <div class="form-group">
+          <label for="qAddress">Address</label>
+          <input type="text" id="qAddress" name="address">
+        </div>
+        <div class="form-group">
+          <label for="qCity">City</label>
+          <input type="text" id="qCity" name="city">
+        </div>
+        <div class="form-group">
+          <label for="qState">State</label>
+          <input type="text" id="qState" name="state">
+        </div>
+        <div class="form-group">
+          <label for="qExtra">Extra Notes</label>
+          <textarea id="qExtra" name="extra"></textarea>
+        </div>
+        <!-- Hidden field for cart data -->
+        <input type="hidden" name="cart" id="cartData">
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="quoteCancel">Cancel</button>
+      <button class="btn primary" type="submit" form="quoteForm">Send Request</button>
+    </div>
+  </div>
+
+  <!-- Note Modal -->
+  <!-- Yard Size Modal (shown before frequency for mowing) -->
+  <div class="modal" id="yardModal">
+    <div class="modal-head">
+      <b id="yardTitle">Select Yard Size</b>
+      <button class="iconbtn" id="yardClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" id="yardSubtitle">Tell us the approximate yard size.</p>
+      <div class="yard-options" id="yardOptions">
+        <button class="btn yard-btn" data-yard="Small" data-price="45">
+          <div>Small <span class="badge">$45</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. &lt; 0.25 acres</div>
+        </button>
+
+        <button class="btn yard-btn" data-yard="Medium" data-price="65">
+          <div>Medium <span class="badge">$65</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. 0.25–0.75 acres</div>
+        </button>
+
+        <button class="btn yard-btn" data-yard="Large" data-price="95">
+          <div>Large <span class="badge">$95</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. 0.75–1.5 acres</div>
+        </button>
+
+        <button class="btn yard-btn" data-yard="Extra Large" data-price="140">
+          <div>Extra Large <span class="badge">$140</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. &gt; 1.5 acres</div>
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="yardCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Frequency Modal (for services like Mowing) -->
+  <div class="modal" id="freqModal">
+    <div class="modal-head">
+      <b id="freqTitle">Select Frequency</b>
+      <button class="iconbtn" id="freqClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" id="freqSubtitle">Choose how often you'd like this service.</p>
+      <div class="freq-options" id="freqOptions">
+        <button class="btn freq-btn" data-frequency="One Time">One Time</button>
+
+        <button class="btn freq-btn" data-frequency="Weekly">
+          <div>Weekly <span class="badge">15% off</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Recommended for regular upkeep</div>
+        </button>
+
+        <button class="btn freq-btn" data-frequency="Bi-Weekly">
+          <div>Bi-Weekly <span class="badge">10% off</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Good balance between service and cost</div>
+        </button>
+
+        <button class="btn freq-btn" data-frequency="Monthly">Monthly</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="freqCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Add-ons Modal (weed cutting, spraying, seeding) -->
+  <div class="modal" id="addonsModal">
+    <div class="modal-head">
+      <b id="addonsTitle">Add-ons for Mowing</b>
+      <button class="iconbtn" id="addonsClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted">Select any additional services you'd like added to this mowing visit.</p>
+      <div class="addons-list" id="addonsList">
+        <label class="addon-row"><input type="checkbox" class="addon-checkbox" data-addon="Weed Eating" data-price="25"> Weed Eating <span class="badge">$25</span></label>
+        <label class="addon-row"><input type="checkbox" class="addon-checkbox" data-addon="Spraying" data-price="30"> Spraying <span class="badge">$30</span></label>
+        <label class="addon-row"><input type="checkbox" class="addon-checkbox" data-addon="Seeding" data-price="50"> Seeding <span class="badge">$50</span></label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="addonsCancel">Skip</button>
+      <button class="btn primary" id="addonsConfirm">Add Selected</button>
+    </div>
+  </div>
+
+  <!-- Square Footage Modal (for concrete work) -->
+  <div class="modal" id="sqftModal">
+    <div class="modal-head">
+      <b id="sqftTitle">Square Footage (Optional)</b>
+      <button class="iconbtn" id="sqftClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" id="sqftSubtitle">Provide approximate square footage to help us give you a more accurate estimate.</p>
+      <div class="form-group">
+        <label for="sqftInput">Square Footage (optional)</label>
+        <input type="number" id="sqftInput" placeholder="e.g., 500" min="0" style="padding:12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); width:100%; font-size:16px;">
+        <div class="muted" style="margin-top:8px; font-size:13px;">You can skip this and we'll estimate based on your project details.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="sqftSkip">Skip</button>
+      <button class="btn primary" id="sqftConfirm">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Note Modal -->
+  <div class="modal" id="noteModal">
+    <div class="modal-head">
+      <b id="noteTitle">Enter note</b>
+      <button class="iconbtn" id="noteClose" title="Close - cart will be saved">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label id="noteLabel">Description</label>
+        <textarea id="noteTextarea" placeholder="Please describe..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="noteCancel">Cancel</button>
+      <button class="btn primary" id="noteAdd">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-head">
+      <b>Your Service Cart</b>
+      <button class="iconbtn" id="cartClose" title="Close cart - your items are saved">✕</button>
+    </div>
+    <div class="cart-body" id="cartItems"></div>
+    <div class="cart-foot">
+      <div>
+        <div class="muted">Estimated Total</div>
+        <div id="cartTotalPrice" style="font-weight:900; font-size:18px;">$0</div>
+        <div class="muted" id="cartNote">Add services, then send your request.</div>
+      </div>
+      <div>
+        <button class="btn" id="clearCart">Clear</button>
+        <button class="btn primary" id="sendQuote" disabled>Send Quote Request</button>
+      </div>
+    </div>
+  </aside>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">Get In Touch</h3>
+        <p><b>Phone:</b> <a href="tel:507-920-6409">507-920-6409</a></p>
+        <p><b>Email:</b> <a href="mailto:ckuball106@gmail.com">ckuball106@gmail.com</a></p>
+        <p><b>Service Area:</b> Based out of Slayton, MN - serving surrounding areas</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Business Hours</h3>
+        <p><b>Monday - Friday:</b> 7:00 AM - 6:00 PM</p>
+        <p><b>Saturday & Sunday:</b> Closed (Emergency services available)</p>
+        <p style="margin-top:16px; font-style:italic;" class="muted">Response times may vary during peak seasons. We strive to return all calls within 24 hours.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © <span id="year"></span> North Star Maintenance
+</footer>
+
+<!-- Toast notification -->
+<div id="toast" class="toast">Item added to cart!</div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "photos": [
+    {
+      "id": 1,
+      "title": "Lawn Care",
+      "description": "Pristine lawn maintenance",
+      "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600",
+      "category": "lawn-care"
+    },
+    {
+      "id": 2,
+      "title": "Pressure Washing",
+      "description": "Restored driveways & siding",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600",
+      "category": "pressure-washing"
+    },
+    {
+      "id": 3,
+      "title": "Property Care",
+      "description": "Complete property services",
+      "imageUrl": "https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=600",
+      "category": "property-care"
+    }
+  ]
+}

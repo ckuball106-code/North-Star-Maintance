@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop - North Star Maintenance</title>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <svg class="logo" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2f6b4f;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#c99a4a;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <path d="M19 2l3.09 9.26h10L25.45 17.64l3.09 9.26L19 21.52l-9.54 5.38 3.09-9.26L5.91 11.26h10L19 2z" fill="url(#grad1)"/>
+      </svg>
+      <span>North Star Maintenance</span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn" href="index.html">Services</a>
+      <button class="btn" id="cartBtn" type="button">
+        Cart <span class="badge" id="cartCount">0</span>
+      </button>
+      <a class="btn primary" href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Shop Temporarily Unavailable</h1>
+    <p class="sub">Our shop is currently being developed. Please check back soon — we're working to bring you lawn care supplies and helpful products.</p>
+    <p style="margin-top:12px"><a class="btn" href="index.html">Return to Services</a></p>
+  </section>
+</main>
+
+<!-- Cart Drawer -->
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <b>Your Cart</b>
+    <button class="iconbtn" id="cartClose" title="Close cart - your items are saved">✕</button>
+  </div>
+  <div class="cart-body" id="cartItems"></div>
+  <div class="cart-foot">
+    <div>
+      <div class="muted">Total</div>
+      <div id="cartTotalPrice" style="font-weight:900; font-size:18px;">$0</div>
+    </div>
+    <div>
+      <button class="btn" id="clearCart">Clear</button>
+      <button class="btn primary" id="checkoutBtn">Proceed to Checkout</button>
+    </div>
+  </div>
+</aside>
+
+<footer>
+  © <span id="year"></span> North Star Maintenance
+</footer>
+
+<!-- Toast notification -->
+<div id="toast" class="toast">Item added to cart!</div>
+
+  <script src="./shop.js" defer></script>
+</body>
+</html>
