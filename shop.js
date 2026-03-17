@@ -32,11 +32,14 @@ loadShopCart();
 function addProductToCart(productName, price){
   const current = shopCart.get(productName);
   
-  if (!current){
-    shopCart.set(productName, { qty: 1, price });
-  } else {
-    current.qty++;
+  if (current){
+    renderShopCart();
+    document.getElementById('cartDrawer').classList.add('open');
+    showToast('Item already in cart');
+    return;
   }
+
+  shopCart.set(productName, { qty: 1, price });
 
   renderShopCart();
   document.getElementById('cartDrawer').classList.add('open');
@@ -65,6 +68,13 @@ function renderShopCart(){
   if (shopCart.size === 0){
     cartItems.innerHTML = '<div class="muted" style="padding:20px; text-align:center;">Your cart is empty</div>';
     cartCount.textContent = '0';
+    
+    // Update floating cart badge
+    const floatingCartCount = document.getElementById('floatingCartCount');
+    if(floatingCartCount){
+      floatingCartCount.textContent = '0';
+    }
+    
     document.getElementById('cartTotalPrice').textContent = '$0.00';
     saveShopCart();
     return;
@@ -95,16 +105,32 @@ function renderShopCart(){
 
   cartItems.innerHTML = html;
   cartCount.textContent = count;
+  
+  // Update floating cart badge
+  const floatingCartCount = document.getElementById('floatingCartCount');
+  if(floatingCartCount){
+    floatingCartCount.textContent = count;
+  }
+  
   document.getElementById('cartTotalPrice').textContent = '$' + total.toFixed(2);
   saveShopCart();
 }
 
-function showToast(){
+let toastTimer;
+
+function showToast(message = 'Added to cart'){
   const toast = document.getElementById('toast');
+  if(!toast) return;
+
+  toast.textContent = message;
+  toast.classList.remove('show');
+  void toast.offsetWidth;
   toast.classList.add('show');
-  setTimeout(() => {
+
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
     toast.classList.remove('show');
-  }, 2000);
+  }, 3000); // Show for 3 seconds
 }
 
 // Cart drawer
@@ -116,6 +142,12 @@ const checkoutBtn = document.getElementById('checkoutBtn');
 
 cartBtn.onclick = () => cartDrawer.classList.add('open');
 cartClose.onclick = () => cartDrawer.classList.remove('open');
+
+// Floating cart button
+const floatingCart = document.getElementById('floatingCart');
+if(floatingCart){
+  floatingCart.onclick = () => cartDrawer.classList.add('open');
+}
 
 clearCartBtn.onclick = () => {
   shopCart.clear();

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes" />
+  <title>FAQ - North Star Maintenance</title>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span>North Star Maintenance</span>
+    </a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="wrap">
+    <div class="nav-actions" id="navActions">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="about.html">About</a>
+      <a class="btn" href="faq.html">FAQ</a>
+      <button class="btn" id="cartBtn" type="button">
+        Cart <span class="badge" id="cartCount">0</span>
+      </button>
+      <span class="btn disabled" title="Shop temporarily unavailable">Shop — Being developed</span>
+      <a class="btn primary" href="index.html#services">Get a Quote</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="faq" style="margin-top: 40px;">
+    <h1>Frequently Asked Questions</h1>
+    <div class="faq-list">
+      <details class="service-detail">
+        <summary>How do I get a quote?</summary>
+        <div class="detail-content">
+          <p>Getting a quote is easy! Simply select the services you need from our Services section, add them to your cart, and submit a quote request. You can also call us directly at <a href="tel:507-920-6409">507-920-6409</a> to discuss your needs.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you offer recurring service plans?</summary>
+        <div class="detail-content">
+          <p>Yes! We offer weekly, bi-weekly, and monthly service plans for lawn care and other maintenance services. Recurring plans come with discounted rates—up to 15% off for weekly service.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What areas do you serve?</summary>
+        <div class="detail-content">
+          <p>We're based in Slayton, MN and serve the surrounding communities including Lake Shetek, Currie, Fulda, Westbrook, Tracy, and more. Contact us to confirm service availability in your area.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you provide services for lake properties?</summary>
+        <div class="detail-content">
+          <p>Absolutely! We specialize in lake property maintenance including dock washing, shoreline cleanup, seasonal opening/closing services, and regular upkeep for vacation homes.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Are you insured?</summary>
+        <div class="detail-content">
+          <p>Yes, North Star Maintenance is fully insured for your peace of mind. We take safety seriously and maintain comprehensive liability coverage.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What payment methods do you accept?</summary>
+        <div class="detail-content">
+          <p>We accept cash, checks, and major credit cards. Payment is typically due upon completion of service, though we can arrange other terms for recurring customers.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>Do you offer emergency or same-day service?</summary>
+        <div class="detail-content">
+          <p>We understand emergencies happen! While we can't always guarantee same-day service, we do our best to accommodate urgent requests. Call us at <a href="tel:507-920-6409">507-920-6409</a> and we'll work with you.</p>
+        </div>
+      </details>
+
+      <details class="service-detail">
+        <summary>What if I'm not satisfied with the service?</summary>
+        <div class="detail-content">
+          <p>Your satisfaction is our priority. If you're not completely happy with our work, please let us know within 48 hours and we'll make it right—guaranteed.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="seasonal-tips">
+    <h2>Seasonal Property Care Tips</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>🌱 Spring & Summer</h3>
+        <ul>
+          <li><strong>Start early:</strong> Schedule spring cleanup to remove winter debris</li>
+          <li><strong>Regular mowing:</strong> Keep grass at 2.5-3 inches for healthiest growth</li>
+          <li><strong>Pressure wash:</strong> Clean siding and decks before the season heats up</li>
+          <li><strong>Inspect:</strong> Check for winter damage and address repairs early</li>
+          <li><strong>Lake properties:</strong> Open seasonal properties and inspect docks</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🍂 Fall & Winter</h3>
+        <ul>
+          <li><strong>Fall cleanup:</strong> Remove leaves to prevent lawn damage</li>
+          <li><strong>Gutter cleaning:</strong> Clear debris before winter to prevent ice dams</li>
+          <li><strong>Winterize:</strong> Prepare lake properties for cold weather</li>
+          <li><strong>Snow prep:</strong> Set up snow removal service before the first storm</li>
+          <li><strong>Safety first:</strong> Keep walkways clear and salted for safety</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact-cta" style="text-align:center; margin: 60px 0;">
+    <h2>Still Have Questions?</h2>
+    <p class="sub">Contact us directly or request a free quote.</p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a class="btn" href="tel:507-920-6409">Call 507-920-6409</a>
+      <a class="btn primary" href="index.html#services">Get a Free Quote</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>&copy; 2026 North Star Maintenance. All rights reserved.</p>
+    <p>Serving Slayton, MN and surrounding areas with quality property maintenance.</p>
+    <p><a href="tel:507-920-6409">Call 507-920-6409</a></p>
+  </div>
+</footer>
+
+<!-- Floating cart button -->
+<button class="floating-cart" id="floatingCart" type="button">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+  <span class="floating-cart-badge" id="floatingCartCount">0</span>
+</button>
+
+<script src="./app.js"></script>
+</body>
+</html>

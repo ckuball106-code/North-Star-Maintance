@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes" />
+  <title>About - North Star Maintenance</title>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span>North Star Maintenance</span>
+    </a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="wrap">
+    <div class="nav-actions" id="navActions">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="about.html">About</a>
+      <a class="btn" href="faq.html">FAQ</a>
+      <button class="btn" id="cartBtn" type="button">
+        Cart <span class="badge" id="cartCount">0</span>
+      </button>
+      <span class="btn disabled" title="Shop temporarily unavailable">Shop — Being developed</span>
+      <a class="btn primary" href="index.html#services">Get a Quote</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section style="margin-top: 40px;">
+    <h1>About North Star Maintenance</h1>
+    <div class="card">
+      <p>Founded on the principles of quality workmanship and reliable service, North Star Maintenance has been serving the Slayton area and surrounding communities with pride. We understand that your home or lake property is more than just a building—it's where memories are made.</p>
+      <p>Our experienced team brings years of expertise in property maintenance, combining traditional craftsmanship with modern techniques. Whether it's maintaining your lawn through the growing season or ensuring safe access during winter storms, we're committed to being your trusted partner in property care.</p>
+      <p>We specialize in both residential homes and lake properties, understanding the unique needs each requires. Our goal is simple: keep your property looking its best so you can focus on what matters most.</p>
+    </div>
+  </section>
+
+  <section id="why-choose">
+    <h2>Why Choose North Star Property Care?</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>Reliable & Professional</h3>
+        <p>Our experienced team delivers consistent, high-quality service you can trust.</p>
+      </div>
+      <div class="card">
+        <h3>Year-Round Service</h3>
+        <p>From lawn care in summer to snow removal in winter, we're here when you need us.</p>
+      </div>
+      <div class="card">
+        <h3>Competitive Pricing</h3>
+        <p>Transparent pricing with no hidden fees. Get the best value for your property maintenance needs.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="service-area">
+    <h2>Service Area</h2>
+    <div class="card">
+      <h3 style="margin-top:0">Proudly Serving Southwest Minnesota</h3>
+      <p><strong>Based in Slayton, MN</strong> - We provide comprehensive property maintenance services throughout the surrounding area, including:</p>
+      <div class="grid3" style="margin-top:20px">
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Primary Service Area</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Slayton</li>
+            <li>Lake Shetek</li>
+            <li>Currie</li>
+            <li>Fulda</li>
+            <li>Westbrook</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Extended Service Area</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Tracy</li>
+            <li>Walnut Grove</li>
+            <li>Avoca</li>
+            <li>Iona</li>
+            <li>Chandler</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--brand2); margin: 0 0 8px 0;">Special Services</h4>
+          <ul style="margin:0; padding-left: 20px;">
+            <li>Lake Property Maintenance</li>
+            <li>Rental Property Care</li>
+            <li>Vacation Home Management</li>
+            <li>Commercial Properties</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:20px; font-style:italic;" class="muted">Don't see your city listed? Contact us—we may still be able to serve your area!</p>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <h2>What Our Customers Say</h2>
+    <div class="grid2">
+      <div class="card testimonial">
+        <p>"North Star Property Care transformed our lake house property. Their attention to detail and professional service is unmatched."</p>
+        <cite>- Sarah M., Lake Property Owner</cite>
+      </div>
+      <div class="card testimonial">
+        <p>"Reliable snow removal service that keeps our driveway clear and safe. Highly recommend for winter maintenance."</p>
+        <cite>- Mike R., Homeowner</cite>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact-cta" style="text-align:center; margin: 60px 0;">
+    <h2>Ready to Get Started?</h2>
+    <p class="sub">Request a free quote for your property maintenance needs.</p>
+    <a class="btn primary" href="index.html#services">Get a Free Quote</a>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>&copy; 2026 North Star Maintenance. All rights reserved.</p>
+    <p>Serving Slayton, MN and surrounding areas with quality property maintenance.</p>
+    <p><a href="tel:507-920-6409">Call 507-920-6409</a></p>
+  </div>
+</footer>
+
+<!-- Floating cart button -->
+<button class="floating-cart" id="floatingCart" type="button">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+  <span class="floating-cart-badge" id="floatingCartCount">0</span>
+</button>
+
+<script src="./app.js"></script>
+</body>
+</html>

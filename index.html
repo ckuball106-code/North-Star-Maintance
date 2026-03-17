@@ -13,15 +13,20 @@
   <!-- Everything from <header> to </footer> -->
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="#">
-      <img src="logo.png" alt="North Star Maintenance" class="logo">
+    <a class="brand" href="index.html">
       <span>North Star Maintenance</span>
     </a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
   <div class="wrap">
-    <div class="nav-actions">
-      <a class="btn" href="#about">About</a>
-      <a class="btn" href="#faq">FAQ</a>
+    <div class="nav-actions" id="navActions">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="about.html">About</a>
+      <a class="btn" href="faq.html">FAQ</a>
       <button class="btn" id="cartBtn" type="button">
         Cart <span class="badge" id="cartCount">0</span>
       </button>
@@ -32,39 +37,21 @@
 </header>
 
 <main class="wrap">
-  <!-- Emergency Services Banner -->
-  <div class="emergency-banner">
-    <div class="emergency-content">
-      <strong>🚨 Emergency Services Available</strong>
-      <span>Need urgent property maintenance? Storm damage? Call us now!</span>
-    </div>
-    <a href="tel:507-920-6409" class="btn primary" style="white-space:nowrap">Call 507-920-6409</a>
-  </div>
-
   <section class="hero">
-    <h1>Keep your home or lake house looking its best.</h1>
+    <div class="hero-brand">
+      <img class="hero-logo" src="logo.png" alt="North Star Maintenance logo">
+      <div class="hero-name">North Star Maintenance</div>
+    </div>
+    <h1>Professional Property Maintenance You Can Trust</h1>
     <p class="sub">
-      We specialize in comprehensive property maintenance services including <b>lawn care</b>, <b>pressure washing</b>, <b>concrete work</b>, <b>junk removal</b>,
-      <b>handyman services</b>, <b>window washing</b>, and <b>snow removal</b>, ensuring your home, lake house, or rental property remains pristine year-round.
+      Comprehensive lawn care, pressure washing, snow removal, and handyman services for homes, lake properties, and rentals across Southwest Minnesota.
     </p>
-    <a class="btn primary" href="#services">Get a Free Quote</a>
+    <a class="btn primary cta-large" href="#services">Request Free Quote</a>
   </section>
 
   <section id="services">
-    <h2>Services</h2>
-    <p class="sub">Click a service to add it to your cart.</p>
+    <h2 class="section-title">Residential & Commercial Services</h2>
     
-    <div class="how-to-order">
-      <h3>📋 How to Get Your Quote:</h3>
-      <ol>
-        <li><strong>Click a service card below</strong> to see what's available</li>
-        <li><strong>Select the items you need</strong> from the service menu</li>
-        <li><strong>Items are added to your cart</strong> at the top right</li>
-        <li><strong>Click the Cart button</strong> when you're done selecting</li>
-        <li><strong>Fill out your contact info</strong> and submit for your free estimate!</li>
-      </ol>
-    </div>
-
     <div class="grid3">
       <div class="card service-card" data-service="Lawn Care" data-menu="lawn">
         <div class="service-top">
@@ -128,6 +115,15 @@
         <p class="service-desc">Driveways, patios, sidewalks, and repairs.</p>
         <div class="service-hint">Click to choose items</div>
       </div>
+
+      <div class="card service-card" data-service="Landscaping" data-menu="landscaping">
+        <div class="service-top">
+          <h3>Landscaping</h3>
+          <span class="badge">Choose</span>
+        </div>
+        <p class="service-desc">Mulch, rock, edging, trimming, and landscape cleanup.</p>
+        <div class="service-hint">Click to choose items</div>
+      </div>
     </div>
   </section>
 
@@ -144,12 +140,12 @@
       <div class="detail-content">
         <p>Our lawn care services are designed to keep your property looking pristine throughout the growing season. We offer:</p>
         <ul>
-          <li><strong>Weed Eating:</strong> Precise trimming around edges, trees, docks, and hard-to-reach areas to maintain clean lines.</li>
-          <li><strong>Spraying:</strong> Targeted weed control and fertilization to promote healthy turf growth.</li>
-          <li><strong>Seeding:</strong> Overseeding and patch repair to thicken and improve your lawn's appearance.</li>
+          <li><strong>Weed Eating:</strong> Precise trimming around edges, trees, docks, and hard-to-reach areas to maintain clean lines. <span class="muted">Starting at $35</span></li>
+          <li><strong>Spraying:</strong> Targeted weed control and fertilization to promote healthy turf growth. <span class="muted">Starting at $45</span></li>
+          <li><strong>Seeding:</strong> Overseeding and patch repair to thicken and improve your lawn's appearance. <span class="muted">Starting at $85</span></li>
           <li><strong>Mowing:</strong> Professional mowing with optional edging for a polished finish.</li>
-          <li><strong>Trimming & Edging:</strong> Crisp lines along sidewalks, driveways, and landscaping beds.</li>
-          <li><strong>Spring/Fall Cleanup:</strong> Removal of leaves, sticks, and seasonal debris.</li>
+          <li><strong>Trimming & Edging:</strong> Crisp lines along sidewalks, driveways, and landscaping beds. <span class="muted">Starting at $30</span></li>
+          <li><strong>Spring/Fall Cleanup:</strong> Removal of leaves, sticks, and seasonal debris. <span class="muted">Starting at $120</span></li>
         </ul>
       </div>
     </details>
@@ -227,14 +223,32 @@
       <div class="detail-content">
         <p>Professional concrete services for residential and commercial properties:</p>
         <ul>
-          <li><strong>Driveway Installation:</strong> New concrete driveways with proper grading and reinforcement.</li>
-          <li><strong>Patio Installation:</strong> Custom concrete patios for outdoor living spaces.</li>
-          <li><strong>Sidewalk Installation:</strong> Durable sidewalks and walkways.</li>
-          <li><strong>Concrete Repair:</strong> Fix cracks, chips, and damaged sections.</li>
-          <li><strong>Concrete Overlay:</strong> Apply decorative overlay to existing concrete surfaces.</li>
-          <li><strong>Steps/Stairs:</strong> Safe and sturdy concrete steps and stairways.</li>
+          <li><strong>Driveway Installation:</strong> New concrete driveways with proper grading and reinforcement. <span class="muted">Starting at $9/sq ft</span></li>
+          <li><strong>Patio Installation:</strong> Custom concrete patios for outdoor living spaces. <span class="muted">Starting at $10/sq ft</span></li>
+          <li><strong>Sidewalk Installation:</strong> Durable sidewalks and walkways. <span class="muted">Starting at $8/sq ft</span></li>
+          <li><strong>Concrete Repair:</strong> Fix cracks, chips, and damaged sections. <span class="muted">Starting at $7/sq ft</span></li>
+          <li><strong>Concrete Sealing:</strong> Apply protective sealant to help prevent moisture damage, stains, and surface wear. <span class="muted">Starting at $2/sq ft</span></li>
+          <li><strong>Concrete Overlay:</strong> Apply decorative overlay to existing concrete surfaces. <span class="muted">Starting at $12/sq ft</span></li>
+          <li><strong>Steps/Stairs:</strong> Safe and sturdy concrete steps and stairways. <span class="muted">Starting at $15/sq ft</span></li>
         </ul>
         <p>Pricing varies by project size and scope. Contact us for a detailed quote based on your specific needs.</p>
+      </div>
+    </details>
+
+    <details class="service-detail">
+      <summary>Landscaping</summary>
+      <div class="detail-content">
+        <p>Enhance curb appeal and keep your property looking clean with our landscaping services:</p>
+        <ul>
+          <li><strong>Mulch Installation:</strong> Fresh mulch installation in flower and landscape beds. <span class="muted">Starting at $180</span></li>
+          <li><strong>Rock Installation:</strong> Decorative rock installs for low-maintenance bed coverage. <span class="muted">Starting at $250</span></li>
+          <li><strong>Bed Edging:</strong> Sharp, defined edges for beds and borders. <span class="muted">Starting at $120</span></li>
+          <li><strong>Shrub Trimming:</strong> Shape and trim shrubs to keep plants healthy and neat. <span class="muted">Starting at $95</span></li>
+          <li><strong>Bush / Shrub Removal:</strong> Remove overgrown or unwanted shrubs with cleanup included. <span class="muted">Starting at $140</span></li>
+          <li><strong>Small Tree Trimming:</strong> Prune and shape smaller trees for safety and appearance. <span class="muted">Starting at $125</span></li>
+          <li><strong>Landscape Cleanup:</strong> Remove leaves, sticks, and debris from beds, walkways, and hardscape. <span class="muted">Starting at $110</span></li>
+        </ul>
+        <p>Pricing varies based on bed size, material type, and plant density. Contact us for a detailed quote.</p>
       </div>
     </details>
   </section>
@@ -469,16 +483,39 @@
           <input type="text" id="qState" name="state">
         </div>
         <div class="form-group">
+          <label for="qDate">Preferred Service Date *</label>
+          <input type="date" id="qDate" name="preferred_date" required>
+        </div>
+        <div class="form-group">
+          <label for="qTime">Preferred Time</label>
+          <select id="qTime" name="preferred_time">
+            <option value="">Any time</option>
+            <option value="Morning (8am–12pm)">Morning (8am–12pm)</option>
+            <option value="Afternoon (12pm–5pm)">Afternoon (12pm–5pm)</option>
+            <option value="Evening (5pm–7pm)">Evening (5pm–7pm)</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="qExtra">Extra Notes</label>
           <textarea id="qExtra" name="extra"></textarea>
         </div>
         <!-- Hidden field for cart data -->
         <input type="hidden" name="cart" id="cartData">
       </form>
+
+      <!-- Success screen shown after submission -->
+      <div id="quoteSuccess" style="display:none; text-align:center; padding:24px 12px">
+        <div style="font-size:52px; margin-bottom:10px">✅</div>
+        <h3 style="margin:0 0 8px">Request Sent!</h3>
+        <p style="margin:0 0 20px; color:var(--muted)">We'll reach out soon to confirm your appointment.</p>
+        <a id="addToCalBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn primary" style="display:inline-block; margin-bottom:14px; text-decoration:none">📅 Add to Google Calendar</a>
+        <br>
+        <button class="btn" id="quoteDoneBtn">Done</button>
+      </div>
     </div>
-    <div class="modal-foot">
+    <div class="modal-foot" id="quoteModalFoot">
       <button class="btn" id="quoteCancel">Cancel</button>
-      <button class="btn primary" type="submit" form="quoteForm">Send Request</button>
+      <button class="btn primary" type="submit" form="quoteForm" id="quoteSubmitBtn">Send Request</button>
     </div>
   </div>
 
@@ -587,6 +624,315 @@
     </div>
   </div>
 
+  <!-- Driveway Size Modal -->
+  <div class="modal" id="driveModal">
+    <div class="modal-head">
+      <b>Driveway Washing — Select Size</b>
+      <button class="iconbtn" id="driveClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option that best matches your driveway. These are starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="driveOptions">
+        <button class="btn drive-btn" data-size="Single-Car" data-price="60">
+          <div>Single-Car <span class="badge">~$60</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">1 lane wide · approx. 200–400 sq ft</div>
+        </button>
+        <button class="btn drive-btn" data-size="Double-Car" data-price="90">
+          <div>Double-Car <span class="badge">~$90</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">2 lanes wide · approx. 400–700 sq ft</div>
+        </button>
+        <button class="btn drive-btn" data-size="Triple-Car / Large" data-price="140">
+          <div>Triple-Car / Large <span class="badge">~$140</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">3 lanes or long run · approx. 700–1,200 sq ft</div>
+        </button>
+        <button class="btn drive-btn" data-size="Extra Large / Estate" data-price="200">
+          <div>Extra Large / Estate <span class="badge">~$200+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Circular, commercial, or oversized · 1,200+ sq ft</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Prices may vary for heavy oil stains, sealing, or extra-long driveways.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="driveCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- House Washing Size Modal -->
+  <div class="modal" id="houseModal">
+    <div class="modal-head">
+      <b>House Washing — Select Size</b>
+      <button class="iconbtn" id="houseClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option closest to your home's size. These are starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="houseOptions">
+        <button class="btn house-btn" data-size="Small Home" data-price="150">
+          <div>Small Home <span class="badge">~$150</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Under 1,200 sq ft · 1–1.5 story</div>
+        </button>
+        <button class="btn house-btn" data-size="Medium Home" data-price="225">
+          <div>Medium Home <span class="badge">~$225</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">1,200–2,400 sq ft · typical 2-story</div>
+        </button>
+        <button class="btn house-btn" data-size="Large Home" data-price="325">
+          <div>Large Home <span class="badge">~$325</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">2,400–3,500 sq ft · larger 2-story</div>
+        </button>
+        <button class="btn house-btn" data-size="Extra Large / Estate" data-price="450">
+          <div>Extra Large / Estate <span class="badge">~$450+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">3,500+ sq ft · multi-story or estate</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Price may vary for multi-story difficulty, heavy mold/mildew, or soft-wash required areas.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="houseCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Gutter Cleaning Size Modal -->
+  <div class="modal" id="gutterModal">
+    <div class="modal-head">
+      <b>Gutter Cleaning — Select Home Size</b>
+      <button class="iconbtn" id="gutterClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option closest to your home's size. These are starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="gutterOptions">
+        <button class="btn gutter-btn" data-size="Small Home" data-price="80">
+          <div>Small Home <span class="badge">~$80</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Under 1,200 sq ft · single story</div>
+        </button>
+        <button class="btn gutter-btn" data-size="Medium Home" data-price="130">
+          <div>Medium Home <span class="badge">~$130</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">1,200–2,400 sq ft · 1–2 story</div>
+        </button>
+        <button class="btn gutter-btn" data-size="Large Home" data-price="180">
+          <div>Large Home <span class="badge">~$180</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">2,400–3,500 sq ft · 2 story</div>
+        </button>
+        <button class="btn gutter-btn" data-size="Extra Large / Estate" data-price="250">
+          <div>Extra Large / Estate <span class="badge">~$250+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">3,500+ sq ft · multi-story or long roofline</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Price may vary for heavy debris buildup, downspout flushing, or hard-to-reach areas.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="gutterCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Deck / Patio Washing Size Modal -->
+  <div class="modal" id="deckModal">
+    <div class="modal-head">
+      <b>Deck / Patio Washing — Select Size</b>
+      <button class="iconbtn" id="deckClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option closest to your deck or patio size. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="deckOptions">
+        <button class="btn deck-btn" data-size="Small" data-price="75">
+          <div>Small <span class="badge">~$75</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Under 200 sq ft · small patio or stoop</div>
+        </button>
+        <button class="btn deck-btn" data-size="Medium" data-price="130">
+          <div>Medium <span class="badge">~$130</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">200–400 sq ft · standard deck or patio</div>
+        </button>
+        <button class="btn deck-btn" data-size="Large" data-price="200">
+          <div>Large <span class="badge">~$200</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">400–700 sq ft · large deck or wraparound</div>
+        </button>
+        <button class="btn deck-btn" data-size="Extra Large" data-price="275">
+          <div>Extra Large <span class="badge">~$275+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">700+ sq ft · multi-level or estate patio</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Price may vary for heavy staining, wood vs. concrete surface, or furniture removal needed.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="deckCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Sidewalks & Steps Size Modal -->
+  <div class="modal" id="sidewalkModal">
+    <div class="modal-head">
+      <b>Sidewalks &amp; Steps — Select Size</b>
+      <button class="iconbtn" id="sidewalkClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose what best describes your project. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="sidewalkOptions">
+        <button class="btn sidewalk-btn" data-size="Small (Steps / Stoop)" data-price="50">
+          <div>Small — Steps / Stoop <span class="badge">~$50</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Front steps or small entry area</div>
+        </button>
+        <button class="btn sidewalk-btn" data-size="Medium (Single Walkway)" data-price="90">
+          <div>Medium — Single Walkway <span class="badge">~$90</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">One path, up to ~100 linear ft</div>
+        </button>
+        <button class="btn sidewalk-btn" data-size="Large (Multiple Walkways)" data-price="150">
+          <div>Large — Multiple Walkways <span class="badge">~$150</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Several paths or large area</div>
+        </button>
+        <button class="btn sidewalk-btn" data-size="Full Property Walkways" data-price="225">
+          <div>Full Property Walkways <span class="badge">~$225+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">All walkways around the entire property</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Price may vary for heavy moss, staining, or large flagstone areas.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="sidewalkCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Dock / Boathouse Washing Size Modal -->
+  <div class="modal" id="dockModal">
+    <div class="modal-head">
+      <b>Dock / Boathouse Washing — Select Size</b>
+      <button class="iconbtn" id="dockClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option that fits your dock or boathouse. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="dockOptions">
+        <button class="btn dock-btn" data-size="Small Dock" data-price="100">
+          <div>Small Dock <span class="badge">~$100</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Under 200 sq ft · basic single dock</div>
+        </button>
+        <button class="btn dock-btn" data-size="Medium Dock" data-price="175">
+          <div>Medium Dock <span class="badge">~$175</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">200–400 sq ft · standard dock with deck area</div>
+        </button>
+        <button class="btn dock-btn" data-size="Large Dock / Boathouse" data-price="275">
+          <div>Large Dock / Boathouse <span class="badge">~$275</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">400–700 sq ft · covered boathouse or large platform</div>
+        </button>
+        <button class="btn dock-btn" data-size="Extra Large / Full Marina" data-price="400">
+          <div>Extra Large / Full Marina <span class="badge">~$400+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">700+ sq ft · full marina or commercial dock</div>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:14px">&#9432; Price may vary for heavy algae/mildew buildup, height, or access difficulty.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="dockCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Snow: Driveway Clearing Modal -->
+  <div class="modal" id="snowDriveModal">
+    <div class="modal-head">
+      <b>Driveway Clearing — Select Size</b>
+      <button class="iconbtn" id="snowDriveClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option closest to your driveway. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="snowDriveOptions">
+        <button class="btn snow-drive-btn" data-size="Single-Car" data-price="50" data-salt-price="20">
+          <div>Single-Car <span class="badge">~$50</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">1 lane wide · approx. 200–400 sq ft</div>
+        </button>
+        <button class="btn snow-drive-btn" data-size="Double-Car" data-price="75" data-salt-price="30">
+          <div>Double-Car <span class="badge">~$75</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">2 lanes wide · approx. 400–700 sq ft</div>
+        </button>
+        <button class="btn snow-drive-btn" data-size="Triple-Car / Large" data-price="110" data-salt-price="45">
+          <div>Triple-Car / Large <span class="badge">~$110</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">3 lanes or long run · approx. 700–1,200 sq ft</div>
+        </button>
+        <button class="btn snow-drive-btn" data-size="Extra Large / Estate" data-price="160" data-salt-price="60">
+          <div>Extra Large / Estate <span class="badge">~$160+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Circular, commercial, or oversized · 1,200+ sq ft</div>
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="snowDriveCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Snow: Sidewalk Clearing Modal -->
+  <div class="modal" id="snowSidewalkModal">
+    <div class="modal-head">
+      <b>Sidewalk Clearing — Select Size</b>
+      <button class="iconbtn" id="snowSidewalkClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose what best describes your sidewalk area. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="snowSidewalkOptions">
+        <button class="btn snow-sidewalk-btn" data-size="Short (~50 ft)" data-price="30" data-salt-price="15">
+          <div>Short <span class="badge">~$30</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. 50 ft · front walk or stoop area</div>
+        </button>
+        <button class="btn snow-sidewalk-btn" data-size="Medium (~100 ft)" data-price="50" data-salt-price="20">
+          <div>Medium <span class="badge">~$50</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. 100 ft · standard lot walkways</div>
+        </button>
+        <button class="btn snow-sidewalk-btn" data-size="Long (~200 ft)" data-price="75" data-salt-price="30">
+          <div>Long <span class="badge">~$75</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Approx. 200 ft · corner lot or multiple paths</div>
+        </button>
+        <button class="btn snow-sidewalk-btn" data-size="Full Property" data-price="110" data-salt-price="40">
+          <div>Full Property <span class="badge">~$110+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">All walkways around the entire property</div>
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="snowSidewalkCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Snow: Salting Confirm Popup -->
+  <div class="modal" id="saltConfirmModal">
+    <div class="modal-head">
+      <b>Add Salting?</b>
+      <button class="iconbtn" id="saltConfirmClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="saltConfirmMsg" style="margin-bottom:16px"></p>
+      <div class="yard-options">
+        <button class="btn primary" id="saltConfirmYes">Yes, add salting</button>
+        <button class="btn" id="saltConfirmNo">No thanks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snow: Standalone Salting Modal -->
+  <div class="modal" id="saltModal">
+    <div class="modal-head">
+      <b>Salting — Select Area Size</b>
+      <button class="iconbtn" id="saltClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" style="margin-bottom:14px">Choose the option closest to the area needing salting. Starting estimates — final price confirmed on-site.</p>
+      <div class="yard-options" id="saltOptions">
+        <button class="btn salt-btn" data-size="Small Area" data-price="20">
+          <div>Small Area <span class="badge">~$20</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Single path, stoop, or small driveway</div>
+        </button>
+        <button class="btn salt-btn" data-size="Medium Area" data-price="35">
+          <div>Medium Area <span class="badge">~$35</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Double driveway or several walkways</div>
+        </button>
+        <button class="btn salt-btn" data-size="Large Area" data-price="55">
+          <div>Large Area <span class="badge">~$55</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Large driveway and all walkways</div>
+        </button>
+        <button class="btn salt-btn" data-size="Extra Large / Full Property" data-price="80">
+          <div>Extra Large / Full Property <span class="badge">~$80+</span></div>
+          <div class="muted" style="font-size:12px; margin-top:6px">Full estate, commercial, or large lot</div>
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="saltCancel">Cancel</button>
+    </div>
+  </div>
+
   <!-- Note Modal -->
   <div class="modal" id="noteModal">
     <div class="modal-head">
@@ -648,8 +994,18 @@
   © <span id="year"></span> North Star Maintenance
 </footer>
 
+<!-- Floating cart button -->
+<button class="floating-cart" id="floatingCart" type="button">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+  <span class="floating-cart-badge" id="floatingCartCount">0</span>
+</button>
+
 <!-- Toast notification -->
-<div id="toast" class="toast">Item added to cart!</div>
+<div id="toast" class="toast">Added to cart</div>
 
   <script src="./app.js" defer></script>
 </body>
