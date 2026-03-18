@@ -429,6 +429,63 @@ function buildCartTextForEmail(){
   return lines.join('\n').trim();
 }
 
+function splitCustomerName(fullName){
+  const raw = String(fullName || '').trim();
+  if (!raw) return { firstName: '', lastName: '' };
+  const parts = raw.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) return { firstName: parts[0], lastName: '' };
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' ')
+  };
+}
+
+function buildCartLineItemsForZap(){
+  const lineItems = [];
+
+  for (const [category, group] of cart.entries()){
+    for (const [name, item] of group.items.entries()){
+      const qty = item.qty || 1;
+      const unitPrice = getItemUnitPrice(item);
+      const hasNumericPrice = typeof unitPrice === 'number';
+      const addons = Array.isArray(item.addons)
+        ? item.addons.map(a => ({
+            name: a.name,
+            price: (typeof a.price === 'number' ? a.price : 0)
+          }))
+        : [];
+
+      lineItems.push({
+        category,
+        service_name: name,
+        quantity: qty,
+        unit_price: hasNumericPrice ? unitPrice : 0,
+        line_total: hasNumericPrice ? unitPrice * qty : 0,
+        requires_manual_price: !hasNumericPrice,
+        item_note: (item.note || '').trim(),
+        addon_note: (item.addonNote || '').trim(),
+        addons,
+        addons_summary: addons.map(a => `${a.name} ($${a.price})`).join(', ')
+      });
+    }
+  }
+
+  return lineItems;
+}
+
+function buildLineItemsTextForZap(lineItems){
+  if (!Array.isArray(lineItems) || !lineItems.length) return '';
+
+  return lineItems.map((line, idx) => {
+    const pricePart = line.requires_manual_price
+      ? 'Manual pricing needed'
+      : `$${line.unit_price} x ${line.quantity} = $${line.line_total}`;
+    const notePart = line.item_note ? ` | Note: ${line.item_note}` : '';
+    const addonPart = line.addons_summary ? ` | Add-ons: ${line.addons_summary}` : '';
+    return `${idx + 1}. [${line.category}] ${line.service_name} | ${pricePart}${notePart}${addonPart}`;
+  }).join('\n');
+}
+
 function openQuoteModal(){
   if (cart.size === 0) return;
 
@@ -1194,8 +1251,14 @@ quoteCancel.addEventListener('click', closeQuoteModal);
 const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1tss9/';
 
 function buildZapierPayload(total, cartText){
+  const fullName = qName.value || '';
+  const nameParts = splitCustomerName(fullName);
+  const lineItems = buildCartLineItemsForZap();
+
   return {
-    name: qName.value || '',
+    name: fullName,
+    first_name: nameParts.firstName,
+    last_name: nameParts.lastName,
     phone: qPhone.value || '',
     email: qEmail.value || '',
     address: qAddress.value || '',
@@ -1205,6 +1268,9 @@ function buildZapierPayload(total, cartText){
     preferred_time: qTime.value || '',
     extra: qExtra.value || '',
     cart: cartText || '',
+    line_items: lineItems,
+    line_items_count: lineItems.length,
+    line_items_text: buildLineItemsTextForZap(lineItems),
     estimated_total: total,
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
