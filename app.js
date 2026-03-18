@@ -1254,6 +1254,12 @@ function buildZapierPayload(total, cartText){
   const fullName = qName.value || '';
   const nameParts = splitCustomerName(fullName);
   const lineItems = buildCartLineItemsForZap();
+  const lineItemNames = lineItems.map(i => i.service_name);
+  const lineItemQuantities = lineItems.map(i => i.quantity);
+  const lineItemUnitPrices = lineItems.map(i => i.unit_price);
+  const lineItemCategories = lineItems.map(i => i.category);
+  const lineItemNotes = lineItems.map(i => i.item_note || '');
+  const lineItemAddons = lineItems.map(i => i.addons_summary || '');
 
   return {
     name: fullName,
@@ -1271,6 +1277,12 @@ function buildZapierPayload(total, cartText){
     line_items: lineItems,
     line_items_count: lineItems.length,
     line_items_text: buildLineItemsTextForZap(lineItems),
+    line_item_names: lineItemNames,
+    line_item_quantities: lineItemQuantities,
+    line_item_unit_prices: lineItemUnitPrices,
+    line_item_categories: lineItemCategories,
+    line_item_notes: lineItemNotes,
+    line_item_addons: lineItemAddons,
     estimated_total: total,
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
