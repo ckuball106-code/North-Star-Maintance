@@ -1191,7 +1191,7 @@ sendQuote.addEventListener('click', () => {
 quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
-const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1upnx/';
+const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1tss9/';
 
 function buildZapierPayload(total, cartText){
   return {
