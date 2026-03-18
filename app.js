@@ -1284,19 +1284,17 @@ function buildZapierPayload(total, cartText){
     line_item_notes: lineItemNotes,
     line_item_addons: lineItemAddons,
     // Pre-split individual fields so Zapier can map each line item directly
+    // name_N includes all detail since Jobber/Zapier has no per-line description field
     ...lineItems.reduce((acc, item, i) => {
       const n = i + 1;
-      acc[`name_${n}`] = item.service_name || '';
-      acc[`qty_${n}`] = item.quantity || 0;
+      const nameParts = [`[${item.category}] ${item.service_name}`];
+      if (item.addons_summary)        nameParts.push(`Add-ons: ${item.addons_summary}`);
+      if (item.item_note)             nameParts.push(`Note: ${item.item_note}`);
+      if (item.addon_note)            nameParts.push(`Add-on note: ${item.addon_note}`);
+      if (item.requires_manual_price) nameParts.push('Pricing: To be quoted on-site');
+      acc[`name_${n}`] = nameParts.join(' | ');
+      acc[`qty_${n}`]  = item.quantity || 0;
       acc[`price_${n}`] = item.unit_price || 0;
-      acc[`category_${n}`] = item.category || '';
-      // Build a rich description matching what the cart shows
-      const descParts = [`Category: ${item.category}`];
-      if (item.addons_summary) descParts.push(`Add-ons: ${item.addons_summary}`);
-      if (item.item_note)      descParts.push(`Note: ${item.item_note}`);
-      if (item.addon_note)     descParts.push(`Add-on note: ${item.addon_note}`);
-      if (item.requires_manual_price) descParts.push('Pricing: To be quoted on-site');
-      acc[`desc_${n}`] = descParts.join(' | ');
       return acc;
     }, {}),
     estimated_total: total,
