@@ -1283,18 +1283,14 @@ function buildZapierPayload(total, cartText){
     line_item_categories: lineItemCategories,
     line_item_notes: lineItemNotes,
     line_item_addons: lineItemAddons,
-    // Pre-split individual fields so Zapier can map each line item directly
-    // name_N includes all detail since Jobber/Zapier has no per-line description field
-    ...lineItems.reduce((acc, item, i) => {
+    // Always send fixed line item fields 1-8 so Zapier can map them reliably.
+    // Each selected service is its own clean Jobber quote row.
+    ...Array.from({ length: 8 }).reduce((acc, _, i) => {
+      const item = lineItems[i];
       const n = i + 1;
-      const nameParts = [`[${item.category}] ${item.service_name}`];
-      if (item.addons_summary)        nameParts.push(`Add-ons: ${item.addons_summary}`);
-      if (item.item_note)             nameParts.push(`Note: ${item.item_note}`);
-      if (item.addon_note)            nameParts.push(`Add-on note: ${item.addon_note}`);
-      if (item.requires_manual_price) nameParts.push('Pricing: To be quoted on-site');
-      acc[`name_${n}`] = nameParts.join(' | ');
-      acc[`qty_${n}`]  = item.quantity || 0;
-      acc[`price_${n}`] = item.unit_price || 0;
+      acc[`name_${n}`] = item ? `[${item.category}] ${item.service_name}` : '';
+      acc[`qty_${n}`] = item?.quantity || 0;
+      acc[`price_${n}`] = item?.unit_price || 0;
       return acc;
     }, {}),
     estimated_total: total,
