@@ -1283,6 +1283,16 @@ function buildZapierPayload(total, cartText){
     line_item_categories: lineItemCategories,
     line_item_notes: lineItemNotes,
     line_item_addons: lineItemAddons,
+    // Pre-split individual fields so Zapier can map each line item directly
+    ...lineItems.reduce((acc, item, i) => {
+      const n = i + 1;
+      acc[`name_${n}`] = item.service_name || '';
+      acc[`qty_${n}`] = item.quantity || 0;
+      acc[`price_${n}`] = item.unit_price || 0;
+      acc[`category_${n}`] = item.category || '';
+      acc[`note_${n}`] = item.item_note || '';
+      return acc;
+    }, {}),
     estimated_total: total,
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
