@@ -1290,7 +1290,13 @@ function buildZapierPayload(total, cartText){
       acc[`qty_${n}`] = item.quantity || 0;
       acc[`price_${n}`] = item.unit_price || 0;
       acc[`category_${n}`] = item.category || '';
-      acc[`note_${n}`] = item.item_note || '';
+      // Build a rich description matching what the cart shows
+      const descParts = [`Category: ${item.category}`];
+      if (item.addons_summary) descParts.push(`Add-ons: ${item.addons_summary}`);
+      if (item.item_note)      descParts.push(`Note: ${item.item_note}`);
+      if (item.addon_note)     descParts.push(`Add-on note: ${item.addon_note}`);
+      if (item.requires_manual_price) descParts.push('Pricing: To be quoted on-site');
+      acc[`desc_${n}`] = descParts.join(' | ');
       return acc;
     }, {}),
     estimated_total: total,
