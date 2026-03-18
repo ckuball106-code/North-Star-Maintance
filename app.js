@@ -1191,6 +1191,26 @@ sendQuote.addEventListener('click', () => {
 quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
+const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1upnx/';
+
+function buildZapierPayload(total, cartText){
+  return {
+    name: qName.value || '',
+    phone: qPhone.value || '',
+    email: qEmail.value || '',
+    address: qAddress.value || '',
+    city: qCity.value || '',
+    state: qState.value || '',
+    preferred_date: qDate.value || '',
+    preferred_time: qTime.value || '',
+    extra: qExtra.value || '',
+    cart: cartText || '',
+    estimated_total: total,
+    submitted_at: new Date().toISOString(),
+    source: 'north-star-site'
+  };
+}
+
 quoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -1202,37 +1222,50 @@ quoteForm.addEventListener('submit', (e) => {
   quoteSubmitBtn.disabled = true;
   quoteSubmitBtn.textContent = 'Sending…';
 
-  fetch(quoteForm.action, {
+  const formspreeRequest = fetch(quoteForm.action, {
     method: 'POST',
     body: new FormData(quoteForm),
     headers: { 'Accept': 'application/json' }
   })
-  .then(r => r.json())
-  .then(data => {
-    if (data.ok) {
-      // Build Google Calendar link with all appointment details
-      const calUrl = buildGCalUrl(
-        qDate.value, qTime.value,
-        qName.value, qAddress.value, qCity.value, qState.value,
-        cartText, total
-      );
-      addToCalBtn.href = calUrl;
+    .then(r => r.json())
+    .then(data => Boolean(data && data.ok))
+    .catch(() => false);
 
-      // Show success screen, hide form
-      quoteForm.style.display = 'none';
-      quoteModalFoot.style.display = 'none';
-      quoteSuccess.style.display = 'block';
-    } else {
+  const zapierRequest = fetch(ZAPIER_QUOTE_HOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(buildZapierPayload(total, cartText))
+  })
+    .then(r => r.ok)
+    .catch(() => false);
+
+  Promise.all([formspreeRequest, zapierRequest])
+    .then(([formspreeOk, zapierOk]) => {
+      // Consider successful if either destination accepted the quote.
+      if (formspreeOk || zapierOk) {
+        // Build Google Calendar link with all appointment details
+        const calUrl = buildGCalUrl(
+          qDate.value, qTime.value,
+          qName.value, qAddress.value, qCity.value, qState.value,
+          cartText, total
+        );
+        addToCalBtn.href = calUrl;
+
+        // Show success screen, hide form
+        quoteForm.style.display = 'none';
+        quoteModalFoot.style.display = 'none';
+        quoteSuccess.style.display = 'block';
+      } else {
+        quoteSubmitBtn.disabled = false;
+        quoteSubmitBtn.textContent = 'Send Request';
+        alert('There was a problem sending your request. Please try again or call us at 507-920-6409.');
+      }
+    })
+    .catch(() => {
       quoteSubmitBtn.disabled = false;
       quoteSubmitBtn.textContent = 'Send Request';
       alert('There was a problem sending your request. Please try again or call us at 507-920-6409.');
-    }
-  })
-  .catch(() => {
-    quoteSubmitBtn.disabled = false;
-    quoteSubmitBtn.textContent = 'Send Request';
-    alert('There was a problem sending your request. Please try again or call us at 507-920-6409.');
-  });
+    });
 });
 
 // =============================
