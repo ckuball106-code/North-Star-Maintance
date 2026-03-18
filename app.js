@@ -1248,7 +1248,7 @@ sendQuote.addEventListener('click', () => {
 quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
-const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1tss9/';
+const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1wjde/';
 
 function buildZapierPayload(total, cartText){
   const fullName = qName.value || '';
