@@ -1249,6 +1249,33 @@ quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
 const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1wjde/';
+const USE_JOBBER_HANDOFF = true;
+// Paste your Jobber Request Form URL here, e.g. https://clienthub.getjobber.com/client_hubs/xxxx/new_request
+const JOBBER_REQUEST_FORM_URL = '';
+
+function buildJobberHandoffUrl(payload, cartText, total){
+  const base = String(JOBBER_REQUEST_FORM_URL || '').trim();
+  if (!base) return '';
+
+  const params = new URLSearchParams({
+    first_name: payload.first_name || '',
+    last_name: payload.last_name || '',
+    name: payload.name || '',
+    email: payload.email || '',
+    phone: payload.phone || '',
+    address: payload.address || '',
+    city: payload.city || '',
+    state: payload.state || '',
+    preferred_date: payload.preferred_date || '',
+    preferred_time: payload.preferred_time || '',
+    message: cartText || '',
+    details: cartText || '',
+    notes: payload.extra || '',
+    estimated_total: String(total || 0)
+  });
+
+  return `${base}${base.includes('?') ? '&' : '?'}${params.toString()}`;
+}
 
 function buildZapierPayload(total, cartText){
   const fullName = qName.value || '';
@@ -1306,9 +1333,34 @@ quoteForm.addEventListener('submit', (e) => {
   const total = effectiveTotal();
   const cartText = buildCartTextForEmail();
   document.getElementById('cartData').value = `Estimated total: $${total}\n\n${cartText}`;
+  const payload = buildZapierPayload(total, cartText);
 
   quoteSubmitBtn.disabled = true;
   quoteSubmitBtn.textContent = 'Sending…';
+
+  if (USE_JOBBER_HANDOFF) {
+    const handoffUrl = buildJobberHandoffUrl(payload, cartText, total);
+    if (!handoffUrl) {
+      quoteSubmitBtn.disabled = false;
+      quoteSubmitBtn.textContent = 'Send Request';
+      alert('Jobber handoff is enabled, but JOBBER_REQUEST_FORM_URL is empty in app.js. Paste your Jobber request form URL and try again.');
+      return;
+    }
+
+    window.open(handoffUrl, '_blank', 'noopener,noreferrer');
+
+    const calUrl = buildGCalUrl(
+      qDate.value, qTime.value,
+      qName.value, qAddress.value, qCity.value, qState.value,
+      cartText, total
+    );
+    addToCalBtn.href = calUrl;
+
+    quoteForm.style.display = 'none';
+    quoteModalFoot.style.display = 'none';
+    quoteSuccess.style.display = 'block';
+    return;
+  }
 
   const formspreeRequest = fetch(quoteForm.action, {
     method: 'POST',
@@ -1322,7 +1374,7 @@ quoteForm.addEventListener('submit', (e) => {
   const zapierRequest = fetch(ZAPIER_QUOTE_HOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(buildZapierPayload(total, cartText))
+    body: JSON.stringify(payload)
   })
     .then(r => r.ok)
     .catch(() => false);
