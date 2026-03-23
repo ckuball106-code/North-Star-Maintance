@@ -74,11 +74,11 @@ function loadCart(){
 // Save cart to localStorage
 function saveCart(){
   const data = {};
-  cart.forEach((categoryData, category) => {
-    data[category] = {
-      category: categoryData.category,
-      items: Object.fromEntries(categoryData.items)
-    };
+    cart.forEach((categoryData, category) => {
+      data[category] = {
+        category: categoryData.category,
+        items: Object.fromEntries(categoryData.items)
+      };
   });
   localStorage.setItem('cart_data', JSON.stringify(data));
 }
@@ -1289,8 +1289,8 @@ function buildZapierPayload(total, cartText){
       const item = lineItems[i];
       const n = i + 1;
       acc[`name_${n}`] = item ? `[${item.category}] ${item.service_name}` : '';
-      acc[`qty_${n}`] = item?.quantity || 0;
-      acc[`price_${n}`] = item?.unit_price || 0;
+      acc[`qty_${n}`] = item ? (item.quantity || 1) : '';
+      acc[`price_${n}`] = item ? (item.unit_price || 0) : '';
       return acc;
     }, {}),
     estimated_total: total,
