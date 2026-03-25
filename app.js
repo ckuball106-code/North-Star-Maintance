@@ -1264,11 +1264,11 @@ sendQuote.addEventListener('click', () => {
 quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
-const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1wjde/';
+// Zoho Flow webhook URL - sends cart data to Zoho Bigin
+const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.734dc4294d8e9c465905aba83fef515a.8194038684128c37c596ee7879f129b3&isdebug=false';
 const USE_JOBBER_HANDOFF = false;
-// Zoho Form redirect URL — paste your Zoho Form URL here once created
-const ZOHO_FORM_URL = '';
-// (Legacy) Jobber Client Hub URL — no longer used
+// Legacy URLs - no longer used
+const ZAPIER_QUOTE_HOOK_URL = '';
 const JOBBER_REQUEST_FORM_URL = '';
 
 function buildJobberHandoffUrl(payload, cartText, total){
@@ -1404,7 +1404,7 @@ quoteForm.addEventListener('submit', (e) => {
     .then(data => Boolean(data && data.ok))
     .catch(() => false);
 
-  const zapierRequest = fetch(ZAPIER_QUOTE_HOOK_URL, {
+  const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -1412,10 +1412,10 @@ quoteForm.addEventListener('submit', (e) => {
     .then(r => r.ok)
     .catch(() => false);
 
-  Promise.all([formspreeRequest, zapierRequest])
-    .then(([formspreeOk, zapierOk]) => {
+  Promise.all([formspreeRequest, zohoFlowRequest])
+    .then(([formspreeOk, zohoFlowOk]) => {
       // Consider successful if either destination accepted the quote.
-      if (formspreeOk || zapierOk) {
+      if (formspreeOk || zohoFlowOk) {
         // Build Google Calendar link with all appointment details
         const calUrl = buildGCalUrl(
           qDate.value, qTime.value,
