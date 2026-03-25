@@ -1265,9 +1265,11 @@ quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
 const ZAPIER_QUOTE_HOOK_URL = 'https://hooks.zapier.com/hooks/catch/26873065/up1wjde/';
-const USE_JOBBER_HANDOFF = true;
-// Paste your Jobber Request Form URL here, e.g. https://clienthub.getjobber.com/client_hubs/xxxx/new_request
-const JOBBER_REQUEST_FORM_URL = 'https://clienthub.getjobber.com/client_hubs/03a80612-55c5-4a9b-838d-631668bff0f5';
+const USE_JOBBER_HANDOFF = false;
+// Zoho Form redirect URL — paste your Zoho Form URL here once created
+const ZOHO_FORM_URL = '';
+// (Legacy) Jobber Client Hub URL — no longer used
+const JOBBER_REQUEST_FORM_URL = '';
 
 function buildJobberHandoffUrl(payload, cartText, total){
   const base = String(JOBBER_REQUEST_FORM_URL || '').trim();
