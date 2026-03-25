@@ -1264,8 +1264,8 @@ sendQuote.addEventListener('click', () => {
 quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
-// Zoho Flow webhook URL - sends cart data to Zoho Bigin
-const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.734dc4294d8e9c465905aba83fef515a.8194038684128c37c596ee7879f129b3&isdebug=false';
+// Zoho Flow webhook URL - sends cart data to Zoho Invoice
+const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.ec8dcbd56a382468a2922e0680dd918c.089ba9dc43d4169f1b79bf02aede5103&isdebug=false';
 const USE_JOBBER_HANDOFF = false;
 // Legacy URLs - no longer used
 const ZAPIER_QUOTE_HOOK_URL = '';
