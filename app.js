@@ -226,6 +226,8 @@ const qExtra = document.getElementById('qExtra');
 const quoteSubmitBtn = document.getElementById('quoteSubmitBtn');
 const quoteModalFoot = document.getElementById('quoteModalFoot');
 const quoteSuccess = document.getElementById('quoteSuccess');
+const quoteSuccessMsg = document.getElementById('quoteSuccessMsg');
+const jobberContinueBtn = document.getElementById('jobberContinueBtn');
 const addToCalBtn = document.getElementById('addToCalBtn');
 const quoteDoneBtn = document.getElementById('quoteDoneBtn');
 
@@ -493,6 +495,13 @@ function openQuoteModal(){
   quoteForm.style.display = '';
   quoteModalFoot.style.display = '';
   quoteSuccess.style.display = 'none';
+  if (jobberContinueBtn){
+    jobberContinueBtn.style.display = 'none';
+    jobberContinueBtn.href = '#';
+  }
+  if (quoteSuccessMsg){
+    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
+  }
   quoteSubmitBtn.disabled = false;
   quoteSubmitBtn.textContent = 'Send Request';
 
@@ -516,6 +525,13 @@ function closeQuoteModal(){
   quoteForm.reset();
   quoteModalFoot.style.display = '';
   quoteSuccess.style.display = 'none';
+  if (jobberContinueBtn){
+    jobberContinueBtn.style.display = 'none';
+    jobberContinueBtn.href = '#';
+  }
+  if (quoteSuccessMsg){
+    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
+  }
   quoteSubmitBtn.disabled = false;
   quoteSubmitBtn.textContent = 'Send Request';
 
@@ -1348,6 +1364,13 @@ quoteForm.addEventListener('submit', (e) => {
     }
 
     window.open(handoffUrl, '_blank', 'noopener,noreferrer');
+    if (jobberContinueBtn){
+      jobberContinueBtn.href = handoffUrl;
+      jobberContinueBtn.style.display = 'inline-block';
+    }
+    if (quoteSuccessMsg){
+      quoteSuccessMsg.textContent = 'Finish your request in the Jobber tab. If it did not open, click Continue in Jobber below.';
+    }
 
     const calUrl = buildGCalUrl(
       qDate.value, qTime.value,
@@ -1360,6 +1383,14 @@ quoteForm.addEventListener('submit', (e) => {
     quoteModalFoot.style.display = 'none';
     quoteSuccess.style.display = 'block';
     return;
+  }
+
+  if (jobberContinueBtn) {
+    jobberContinueBtn.style.display = 'none';
+    jobberContinueBtn.href = '#';
+  }
+  if (quoteSuccessMsg) {
+    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
   }
 
   const formspreeRequest = fetch(quoteForm.action, {
