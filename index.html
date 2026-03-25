@@ -459,8 +459,12 @@
     <div class="modal-body">
       <form id="quoteForm" action="https://formspree.io/f/xkgakedj" method="POST">
         <div class="form-group">
-          <label for="qName">Name *</label>
-          <input type="text" id="qName" name="name" required>
+          <label for="qFirstName">First Name *</label>
+          <input type="text" id="qFirstName" name="first_name" required>
+        </div>
+        <div class="form-group">
+          <label for="qLastName">Last Name *</label>
+          <input type="text" id="qLastName" name="last_name" required>
         </div>
         <div class="form-group">
           <label for="qPhone">Phone *</label>
@@ -499,8 +503,9 @@
           <label for="qExtra">Extra Notes</label>
           <textarea id="qExtra" name="extra"></textarea>
         </div>
-        <!-- Hidden field for cart data -->
+        <!-- Hidden fields -->
         <input type="hidden" name="cart" id="cartData">
+        <input type="hidden" name="name" id="qName">
       </form>
 
       <!-- Success screen shown after submission -->

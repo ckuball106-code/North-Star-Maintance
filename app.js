@@ -214,7 +214,8 @@ const quoteClose = document.getElementById('quoteClose');
 const quoteCancel = document.getElementById('quoteCancel');
 const quoteForm = document.getElementById('quoteForm');
 
-const qName = document.getElementById('qName');
+const qFirstName = document.getElementById('qFirstName');
+const qLastName = document.getElementById('qLastName');
 const qPhone = document.getElementById('qPhone');
 const qEmail = document.getElementById('qEmail');
 const qAddress = document.getElementById('qAddress');
@@ -512,7 +513,7 @@ function openQuoteModal(){
   quoteModal.classList.add('open');
   modalBackdrop.classList.add('open');
 
-  setTimeout(() => { try { qName.focus(); } catch(e){} }, 0);
+  setTimeout(() => { try { qFirstName.focus(); } catch(e){} }, 0);
 }
 
 // ✅ FIXED: removed broken junkModal/handyModal references
@@ -1296,8 +1297,9 @@ function buildJobberHandoffUrl(payload, cartText, total){
 }
 
 function buildZapierPayload(total, cartText){
-  const fullName = qName.value || '';
-  const nameParts = splitCustomerName(fullName);
+  const firstName = qFirstName.value || '';
+  const lastName = qLastName.value || '';
+  const fullName = `${firstName} ${lastName}`.trim();
   const lineItems = buildCartLineItemsForZap();
   const lineItemNames = lineItems.map(i => i.service_name);
   const lineItemQuantities = lineItems.map(i => i.quantity);
@@ -1308,8 +1310,8 @@ function buildZapierPayload(total, cartText){
 
   return {
     name: fullName,
-    first_name: nameParts.firstName,
-    last_name: nameParts.lastName,
+    first_name: firstName,
+    last_name: lastName,
     phone: qPhone.value || '',
     email: qEmail.value || '',
     address: qAddress.value || '',
@@ -1347,10 +1349,11 @@ function buildZapierPayload(total, cartText){
 quoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  // Populate hidden cart data field
+  // Populate hidden fields
   const total = effectiveTotal();
   const cartText = buildCartTextForEmail();
   document.getElementById('cartData').value = `Estimated total: $${total}\n\n${cartText}`;
+  document.getElementById('qName').value = `${qFirstName.value} ${qLastName.value}`.trim();
   const payload = buildZapierPayload(total, cartText);
 
   quoteSubmitBtn.disabled = true;
@@ -1376,7 +1379,7 @@ quoteForm.addEventListener('submit', (e) => {
 
     const calUrl = buildGCalUrl(
       qDate.value, qTime.value,
-      qName.value, qAddress.value, qCity.value, qState.value,
+      `${qFirstName.value} ${qLastName.value}`.trim(), qAddress.value, qCity.value, qState.value,
       cartText, total
     );
     addToCalBtn.href = calUrl;
@@ -1419,7 +1422,7 @@ quoteForm.addEventListener('submit', (e) => {
         // Build Google Calendar link with all appointment details
         const calUrl = buildGCalUrl(
           qDate.value, qTime.value,
-          qName.value, qAddress.value, qCity.value, qState.value,
+          `${qFirstName.value} ${qLastName.value}`.trim(), qAddress.value, qCity.value, qState.value,
           cartText, total
         );
         addToCalBtn.href = calUrl;
