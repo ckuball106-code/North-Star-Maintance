@@ -1356,6 +1356,14 @@ quoteForm.addEventListener('submit', (e) => {
   document.getElementById('qName').value = `${qFirstName.value} ${qLastName.value}`.trim();
   const payload = buildZapierPayload(total, cartText);
 
+  // Populate line item hidden fields for Formspree
+  document.getElementById('hiddenTotal').value = payload.estimated_total || '';
+  for (let i = 1; i <= 8; i++) {
+    document.getElementById(`hiddenName${i}`).value = payload[`name_${i}`] || '';
+    document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
+    document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
+  }
+
   quoteSubmitBtn.disabled = true;
   quoteSubmitBtn.textContent = 'Sending…';
 
