@@ -449,8 +449,10 @@ function buildCartLineItemsForZap(){
   for (const [category, group] of cart.entries()){
     for (const [name, item] of group.items.entries()){
       const qty = item.qty || 1;
-      const unitPrice = getItemUnitPrice(item);
-      const hasNumericPrice = typeof unitPrice === 'number';
+      // For the main item, use basePrice (without addons) if available
+      const mainPrice = typeof item.basePrice === 'number' ? item.basePrice
+                      : typeof item.price === 'number' ? item.price : 0;
+      const hasNumericPrice = typeof mainPrice === 'number' && mainPrice > 0;
       const addons = Array.isArray(item.addons)
         ? item.addons.map(a => ({
             name: a.name,
@@ -458,18 +460,35 @@ function buildCartLineItemsForZap(){
           }))
         : [];
 
+      // Push the main item (without addon prices rolled in)
       lineItems.push({
         category,
         service_name: name,
         quantity: qty,
-        unit_price: hasNumericPrice ? unitPrice : 0,
-        line_total: hasNumericPrice ? unitPrice * qty : 0,
+        unit_price: hasNumericPrice ? mainPrice : 0,
+        line_total: hasNumericPrice ? mainPrice * qty : 0,
         requires_manual_price: !hasNumericPrice,
         item_note: (item.note || '').trim(),
         addon_note: (item.addonNote || '').trim(),
         addons,
         addons_summary: addons.map(a => `${a.name} ($${a.price})`).join(', ')
       });
+
+      // Push each add-on as its own separate line item
+      for (const addon of addons) {
+        lineItems.push({
+          category,
+          service_name: addon.name,
+          quantity: qty,
+          unit_price: addon.price || 0,
+          line_total: (addon.price || 0) * qty,
+          requires_manual_price: false,
+          item_note: '',
+          addon_note: '',
+          addons: [],
+          addons_summary: ''
+        });
+      }
     }
   }
 
