@@ -91,6 +91,18 @@ from the Webhook trigger output:
   name_8            | String | name_8
   qty_8             | String | qty_8
   price_8           | String | price_8
+  name_9            | String | name_9
+  qty_9             | String | qty_9
+  price_9           | String | price_9
+  name_10           | String | name_10
+  qty_10            | String | qty_10
+  price_10          | String | price_10
+  name_11           | String | name_11
+  qty_11            | String | qty_11
+  price_11          | String | price_11
+  name_12           | String | name_12
+  qty_12            | String | qty_12
+  price_12          | String | price_12
 
 =====================================================
 STEP 5: PASTE THE DELUGE SCRIPT
@@ -351,6 +363,86 @@ if (name_8 != null && name_8 != "")
     }
     item8.put("rate", p8);
     lineItems.add(item8);
+}
+
+// Line item 9
+if (name_9 != null && name_9 != "")
+{
+    item9 = Map();
+    item9.put("name", name_9);
+    q9 = 1;
+    if (qty_9 != null && qty_9 != "")
+    {
+        q9 = qty_9.toLong();
+    }
+    item9.put("quantity", q9);
+    p9 = 0.0;
+    if (price_9 != null && price_9 != "")
+    {
+        p9 = price_9.toDecimal();
+    }
+    item9.put("rate", p9);
+    lineItems.add(item9);
+}
+
+// Line item 10
+if (name_10 != null && name_10 != "")
+{
+    item10 = Map();
+    item10.put("name", name_10);
+    q10 = 1;
+    if (qty_10 != null && qty_10 != "")
+    {
+        q10 = qty_10.toLong();
+    }
+    item10.put("quantity", q10);
+    p10 = 0.0;
+    if (price_10 != null && price_10 != "")
+    {
+        p10 = price_10.toDecimal();
+    }
+    item10.put("rate", p10);
+    lineItems.add(item10);
+}
+
+// Line item 11
+if (name_11 != null && name_11 != "")
+{
+    item11 = Map();
+    item11.put("name", name_11);
+    q11 = 1;
+    if (qty_11 != null && qty_11 != "")
+    {
+        q11 = qty_11.toLong();
+    }
+    item11.put("quantity", q11);
+    p11 = 0.0;
+    if (price_11 != null && price_11 != "")
+    {
+        p11 = price_11.toDecimal();
+    }
+    item11.put("rate", p11);
+    lineItems.add(item11);
+}
+
+// Line item 12
+if (name_12 != null && name_12 != "")
+{
+    item12 = Map();
+    item12.put("name", name_12);
+    q12 = 1;
+    if (qty_12 != null && qty_12 != "")
+    {
+        q12 = qty_12.toLong();
+    }
+    item12.put("quantity", q12);
+    p12 = 0.0;
+    if (price_12 != null && price_12 != "")
+    {
+        p12 = price_12.toDecimal();
+    }
+    item12.put("rate", p12);
+    lineItems.add(item12);
 }
 
 // Fallback: if no line items at all, add a placeholder

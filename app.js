@@ -1330,9 +1330,8 @@ function buildZapierPayload(total, cartText){
     line_item_categories: lineItemCategories,
     line_item_notes: lineItemNotes,
     line_item_addons: lineItemAddons,
-    // Always send fixed line item fields 1-8 so Zapier can map them reliably.
-    // Each selected service is its own clean Jobber quote row.
-    ...Array.from({ length: 8 }).reduce((acc, _, i) => {
+    // Always send fixed line item fields 1-12 so Zoho Flow can map them reliably.
+    ...Array.from({ length: 12 }).reduce((acc, _, i) => {
       const item = lineItems[i];
       const n = i + 1;
       acc[`name_${n}`] = item ? `[${item.category}] ${item.service_name}` : '';
@@ -1362,7 +1361,7 @@ quoteForm.addEventListener('submit', (e) => {
 
     // Populate line item hidden fields for Formspree
     document.getElementById('hiddenTotal').value = payload.estimated_total || '';
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 12; i++) {
       document.getElementById(`hiddenName${i}`).value = payload[`name_${i}`] || '';
       document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
       document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
