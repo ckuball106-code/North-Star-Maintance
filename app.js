@@ -1440,13 +1440,25 @@ quoteForm.addEventListener('submit', (e) => {
     .then(data => Boolean(data && data.ok))
     .catch((err) => { console.error('Formspree error:', err); return false; });
 
-  // Send to Zoho Flow — use no-cors + text/plain to bypass browser CORS restrictions.
-  // The request still reaches Zoho Flow; we just can't read the response.
+  // Send to Zoho Flow — use no-cors + form-urlencoded to bypass CORS and let Zoho parse the fields.
+  const zohoParams = new URLSearchParams();
+  zohoParams.set('first_name', payload.first_name || '');
+  zohoParams.set('last_name', payload.last_name || '');
+  zohoParams.set('email', payload.email || '');
+  zohoParams.set('phone', payload.phone || '');
+  zohoParams.set('address', payload.address || '');
+  zohoParams.set('city', payload.city || '');
+  zohoParams.set('state', payload.state || '');
+  zohoParams.set('preferred_date', payload.preferred_date || '');
+  zohoParams.set('preferred_time', payload.preferred_time || '');
+  zohoParams.set('extra', payload.extra || '');
+  zohoParams.set('estimated_total', String(payload.estimated_total || ''));
+  zohoParams.set('line_items_data', payload.line_items_data || '');
   const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
     method: 'POST',
     mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload)
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: zohoParams.toString()
   })
     .then(() => true)
     .catch(() => false);
