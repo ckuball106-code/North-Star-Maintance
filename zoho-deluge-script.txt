@@ -170,17 +170,18 @@ lineItems.add(ph);
 }
 
 noteText = "";
+nl = String(10).toChar();
 if(preferred_date != null && preferred_date != "")
 {
-noteText = noteText + "Preferred Date: " + preferred_date + "\n";
+noteText = noteText + "Preferred Date: " + preferred_date + nl;
 }
 if(preferred_time != null && preferred_time != "")
 {
-noteText = noteText + "Preferred Time: " + preferred_time + "\n";
+noteText = noteText + "Preferred Time: " + preferred_time + nl;
 }
 if(phone != null && phone != "")
 {
-noteText = noteText + "Phone: " + phone + "\n";
+noteText = noteText + "Phone: " + phone + nl;
 }
 if(extra != null && extra != "")
 {

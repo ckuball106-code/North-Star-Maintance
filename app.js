@@ -1266,7 +1266,7 @@ quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
 // Zoho Flow webhook URL - sends cart data to Zoho Invoice
-const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.1a9d5fcdfdf877a65341cf739f145491.36aadc8cde80059e1d49303feb2e751a&isdebug=false';
+const ZOHO_FLOW_WEBHOOK_URL = 'https://spring-credit-c30a.ckuball106.workers.dev/';
 const USE_JOBBER_HANDOFF = false;
 // Legacy URLs - no longer used
 const ZAPIER_QUOTE_HOOK_URL = '';
@@ -1440,56 +1440,14 @@ quoteForm.addEventListener('submit', (e) => {
     .then(data => Boolean(data && data.ok))
     .catch((err) => { console.error('Formspree error:', err); return false; });
 
-  // Send to Zoho Flow via hidden iframe form POST — bypasses CORS completely.
-  const zohoFlowRequest = new Promise((resolve) => {
-    try {
-      // Create hidden iframe
-      let iframe = document.getElementById('zohoFlowIframe');
-      if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.id = 'zohoFlowIframe';
-        iframe.name = 'zohoFlowIframe';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-      }
-      // Create hidden form
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = ZOHO_FLOW_WEBHOOK_URL;
-      form.target = 'zohoFlowIframe';
-      form.style.display = 'none';
-      // Add all 12 fields
-      const fields = {
-        first_name: payload.first_name || '',
-        last_name: payload.last_name || '',
-        email: payload.email || '',
-        phone: payload.phone || '',
-        address: payload.address || '',
-        city: payload.city || '',
-        state: payload.state || '',
-        preferred_date: payload.preferred_date || '',
-        preferred_time: payload.preferred_time || '',
-        extra: payload.extra || '',
-        estimated_total: String(payload.estimated_total || ''),
-        line_items_data: payload.line_items_data || ''
-      };
-      for (const [key, val] of Object.entries(fields)) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = val;
-        form.appendChild(input);
-      }
-      document.body.appendChild(form);
-      form.submit();
-      // Cleanup after a short delay
-      setTimeout(() => { form.remove(); }, 3000);
-      resolve(true);
-    } catch (err) {
-      console.error('Zoho Flow iframe error:', err);
-      resolve(false);
-    }
-  });
+  // Send to Zoho Flow via Cloudflare Worker relay (handles CORS)
+  const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+    .then(r => r.ok)
+    .catch(() => false);
 
   Promise.all([formspreeRequest, zohoFlowRequest])
     .then(([formspreeOk, zohoFlowOk]) => {
