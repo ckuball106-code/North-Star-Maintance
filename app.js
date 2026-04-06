@@ -1359,14 +1359,10 @@ function buildZapierPayload(total, cartText){
       return acc;
     }, {}),
     estimated_total: total,
-    // Build pipe-separated line items for Zoho Flow: name|qty|price;;name|qty|price
-    line_items_data: Array.from({ length: 12 }).reduce((parts, _, i) => {
-      const item = lineItems[i];
-      if (item) {
-        parts.push(`[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`);
-      }
-      return parts;
-    }, []).join(';;'),
+    // Build pipe-separated line items for Zoho Flow from ALL items (up to 50)
+    line_items_data: lineItems.map(item =>
+      `[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`
+    ).join(';;'),
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
   };
@@ -1394,12 +1390,12 @@ quoteForm.addEventListener('submit', (e) => {
       document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
     }
 
-    // Build pipe-separated line items for Zoho Flow: name|qty|price;;name|qty|price
+    // Build pipe-separated line items for Zoho Flow from ALL line items (no cap)
     const lineItemParts = [];
-    for (let i = 1; i <= 12; i++) {
-      const n = payload[`name_${i}`];
-      if (n) {
-        lineItemParts.push(`${n}|${payload[`qty_${i}`] || 1}|${payload[`price_${i}`] || 0}`);
+    const lineItems = buildCartLineItemsForZap();
+    for (const item of lineItems) {
+      if (item.service_name) {
+        lineItemParts.push(`[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`);
       }
     }
     document.getElementById('hiddenLineItemsData').value = lineItemParts.join(';;');
