@@ -1266,7 +1266,7 @@ quoteClose.addEventListener('click', closeQuoteModal);
 quoteCancel.addEventListener('click', closeQuoteModal);
 
 // Zoho Flow webhook URL - sends cart data to Zoho Invoice
-const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.734dc4294d8e9c465905aba83fef515a.8194038684128c37c596ee7879f129b3&isdebug=false';
+const ZOHO_FLOW_WEBHOOK_URL = 'https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.1a9d5fcdfdf877a65341cf739f145491.36aadc8cde80059e1d49303feb2e751a&isdebug=false';
 const USE_JOBBER_HANDOFF = false;
 // Legacy URLs - no longer used
 const ZAPIER_QUOTE_HOOK_URL = '';
@@ -1349,19 +1349,26 @@ function buildZapierPayload(total, cartText){
 quoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  // Populate hidden fields
-  const total = effectiveTotal();
-  const cartText = buildCartTextForEmail();
-  document.getElementById('cartData').value = `Estimated total: $${total}\n\n${cartText}`;
-  document.getElementById('qName').value = `${qFirstName.value} ${qLastName.value}`.trim();
-  const payload = buildZapierPayload(total, cartText);
+  // Populate hidden fields — wrapped in try/catch so Formspree still sends even if this fails
+  let payload = {};
+  let total = 0;
+  let cartText = '';
+  try {
+    total = effectiveTotal();
+    cartText = buildCartTextForEmail();
+    document.getElementById('cartData').value = `Estimated total: $${total}\n\n${cartText}`;
+    document.getElementById('qName').value = `${qFirstName.value} ${qLastName.value}`.trim();
+    payload = buildZapierPayload(total, cartText);
 
-  // Populate line item hidden fields for Formspree
-  document.getElementById('hiddenTotal').value = payload.estimated_total || '';
-  for (let i = 1; i <= 8; i++) {
-    document.getElementById(`hiddenName${i}`).value = payload[`name_${i}`] || '';
-    document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
-    document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
+    // Populate line item hidden fields for Formspree
+    document.getElementById('hiddenTotal').value = payload.estimated_total || '';
+    for (let i = 1; i <= 8; i++) {
+      document.getElementById(`hiddenName${i}`).value = payload[`name_${i}`] || '';
+      document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
+      document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
+    }
+  } catch (err) {
+    console.error('Error populating hidden fields:', err);
   }
 
   quoteSubmitBtn.disabled = true;
@@ -1406,6 +1413,7 @@ quoteForm.addEventListener('submit', (e) => {
     quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
   }
 
+  // Send to Formspree (primary — always works)
   const formspreeRequest = fetch(quoteForm.action, {
     method: 'POST',
     body: new FormData(quoteForm),
@@ -1413,8 +1421,9 @@ quoteForm.addEventListener('submit', (e) => {
   })
     .then(r => r.json())
     .then(data => Boolean(data && data.ok))
-    .catch(() => false);
+    .catch((err) => { console.error('Formspree error:', err); return false; });
 
+  // Send to Zoho Flow (backup — may fail due to CORS, that's OK)
   const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

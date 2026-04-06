@@ -1,0 +1,441 @@
+=====================================================
+ZOHO FLOW SETUP: Formspree → Zoho Invoice
+Auto-create Contact + Estimate with line items
+=====================================================
+
+OVERVIEW:
+  Website → Formspree → Zoho Flow Webhook → Custom Function → Zoho Invoice
+  (Contact + Estimate created automatically)
+
+=====================================================
+STEP 1: SET UP THE ZOHO FLOW
+=====================================================
+
+1. Go to https://flow.zoho.com
+2. Create a new Flow → Name it "Formspree to Zoho Invoice"
+3. For the TRIGGER, choose "Webhook"
+4. Your webhook URL is:
+   https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.1a9d5fcdfdf877a65341cf739f145491.36aadc8cde80059e1d49303feb2e751a&isdebug=false
+5. Set the payload format to JSON
+
+=====================================================
+STEP 2: TEST THE WEBHOOK (CAPTURE SAMPLE DATA)
+=====================================================
+
+Before adding the Custom Function, you need to send test data so Zoho Flow
+knows what fields to expect.
+
+1. In the Zoho Flow editor, click the Webhook trigger
+2. Click "Test" or "Fetch Sample Data"
+3. While it's listening, go to your website and submit a test quote
+   (add at least 2 items to cart first)
+4. Zoho Flow should capture the fields:
+   first_name, last_name, email, phone, address, city, state,
+   preferred_date, preferred_time, extra, estimated_total,
+   name_1, qty_1, price_1, name_2, qty_2, price_2, ... name_8, qty_8, price_8
+
+=====================================================
+STEP 3: ADD CUSTOM FUNCTION
+=====================================================
+
+1. After the Webhook trigger, click + to add an action
+2. Choose "Custom Function" (under Utilities or Logic)
+3. Click "Connections" in the function editor
+4. Click "Create Connection"
+5. Search for "Zoho Invoice" and select it
+6. Authorize with your Zoho account
+7. Name the connection: zoho_invoice
+   (MUST match exactly — the script uses this name)
+
+=====================================================
+STEP 4: ADD INPUT PARAMETERS
+=====================================================
+
+In the Custom Function, add these input parameters and map each one
+from the Webhook trigger output:
+
+  Parameter Name    | Type   | Map From (Webhook field)
+  ------------------|--------|------------------------
+  first_name        | String | first_name
+  last_name         | String | last_name
+  email             | String | email
+  phone             | String | phone
+  address           | String | address
+  city              | String | city
+  state             | String | state
+  preferred_date    | String | preferred_date
+  preferred_time    | String | preferred_time
+  extra             | String | extra
+  estimated_total   | String | estimated_total
+  name_1            | String | name_1
+  qty_1             | String | qty_1
+  price_1           | String | price_1
+  name_2            | String | name_2
+  qty_2             | String | qty_2
+  price_2           | String | price_2
+  name_3            | String | name_3
+  qty_3             | String | qty_3
+  price_3           | String | price_3
+  name_4            | String | name_4
+  qty_4             | String | qty_4
+  price_4           | String | price_4
+  name_5            | String | name_5
+  qty_5             | String | qty_5
+  price_5           | String | price_5
+  name_6            | String | name_6
+  qty_6             | String | qty_6
+  price_6           | String | price_6
+  name_7            | String | name_7
+  qty_7             | String | qty_7
+  price_7           | String | price_7
+  name_8            | String | name_8
+  qty_8             | String | qty_8
+  price_8           | String | price_8
+
+=====================================================
+STEP 5: PASTE THE DELUGE SCRIPT
+=====================================================
+
+Copy everything between the === lines below and paste into the
+Custom Function script editor:
+
+=== SCRIPT START ===
+
+// -----------------------------------------------
+// North Star Maintenance — Formspree → Zoho Invoice
+// Auto-create contact + estimate with line items
+// -----------------------------------------------
+
+orgId = "919077911";
+baseUrl = "https://www.zohoapis.com/invoice/v3";
+contactId = "";
+
+// ---- STEP 1: Search for existing contact by email ----
+if (email != null && email != "")
+{
+    searchUrl = baseUrl + "/contacts?organization_id=" + orgId + "&email=" + encodeUrl(email);
+    searchResp = invokeurl
+    [
+        url: searchUrl
+        type: GET
+        connection: "zoho_invoice"
+    ];
+    contactsList = searchResp.get("contacts");
+    if (contactsList != null && contactsList.size() > 0)
+    {
+        contactId = contactsList.get(0).get("contact_id").toString();
+        info "Found existing contact: " + contactId;
+    }
+}
+
+// ---- STEP 2: Create contact if not found ----
+if (contactId == "")
+{
+    fullName = ifnull(first_name, "") + " " + ifnull(last_name, "");
+    fullName = fullName.trim();
+    if (fullName == "")
+    {
+        fullName = "Unknown Customer";
+    }
+
+    // Contact person
+    personObj = Map();
+    personObj.put("first_name", ifnull(first_name, ""));
+    personObj.put("last_name", ifnull(last_name, ""));
+    personObj.put("is_primary_contact", true);
+    if (email != null && email != "")
+    {
+        personObj.put("email", email);
+    }
+    if (phone != null && phone != "")
+    {
+        personObj.put("phone", phone);
+    }
+
+    // Billing address
+    addrObj = Map();
+    if (address != null && address != "")
+    {
+        addrObj.put("street", address);
+    }
+    if (city != null && city != "")
+    {
+        addrObj.put("city", city);
+    }
+    if (state != null && state != "")
+    {
+        addrObj.put("state", state);
+    }
+    addrObj.put("country", "U.S.A.");
+
+    // Build contact payload
+    contactBody = Map();
+    contactBody.put("contact_name", fullName);
+    contactBody.put("contact_type", "customer");
+    personsList = List();
+    personsList.add(personObj);
+    contactBody.put("contact_persons", personsList);
+    contactBody.put("billing_address", addrObj);
+
+    createResp = invokeurl
+    [
+        url: baseUrl + "/contacts?organization_id=" + orgId
+        type: POST
+        parameters: contactBody.toString()
+        headers: {"Content-Type":"application/json"}
+        connection: "zoho_invoice"
+    ];
+
+    info "Create contact response: " + createResp;
+    contactId = createResp.get("contact").get("contact_id").toString();
+}
+
+// ---- STEP 3: Build line items ----
+lineItems = List();
+
+// Line item 1
+if (name_1 != null && name_1 != "")
+{
+    item1 = Map();
+    item1.put("name", name_1);
+    q1 = 1;
+    if (qty_1 != null && qty_1 != "")
+    {
+        q1 = qty_1.toLong();
+    }
+    item1.put("quantity", q1);
+    p1 = 0.0;
+    if (price_1 != null && price_1 != "")
+    {
+        p1 = price_1.toDecimal();
+    }
+    item1.put("rate", p1);
+    lineItems.add(item1);
+}
+
+// Line item 2
+if (name_2 != null && name_2 != "")
+{
+    item2 = Map();
+    item2.put("name", name_2);
+    q2 = 1;
+    if (qty_2 != null && qty_2 != "")
+    {
+        q2 = qty_2.toLong();
+    }
+    item2.put("quantity", q2);
+    p2 = 0.0;
+    if (price_2 != null && price_2 != "")
+    {
+        p2 = price_2.toDecimal();
+    }
+    item2.put("rate", p2);
+    lineItems.add(item2);
+}
+
+// Line item 3
+if (name_3 != null && name_3 != "")
+{
+    item3 = Map();
+    item3.put("name", name_3);
+    q3 = 1;
+    if (qty_3 != null && qty_3 != "")
+    {
+        q3 = qty_3.toLong();
+    }
+    item3.put("quantity", q3);
+    p3 = 0.0;
+    if (price_3 != null && price_3 != "")
+    {
+        p3 = price_3.toDecimal();
+    }
+    item3.put("rate", p3);
+    lineItems.add(item3);
+}
+
+// Line item 4
+if (name_4 != null && name_4 != "")
+{
+    item4 = Map();
+    item4.put("name", name_4);
+    q4 = 1;
+    if (qty_4 != null && qty_4 != "")
+    {
+        q4 = qty_4.toLong();
+    }
+    item4.put("quantity", q4);
+    p4 = 0.0;
+    if (price_4 != null && price_4 != "")
+    {
+        p4 = price_4.toDecimal();
+    }
+    item4.put("rate", p4);
+    lineItems.add(item4);
+}
+
+// Line item 5
+if (name_5 != null && name_5 != "")
+{
+    item5 = Map();
+    item5.put("name", name_5);
+    q5 = 1;
+    if (qty_5 != null && qty_5 != "")
+    {
+        q5 = qty_5.toLong();
+    }
+    item5.put("quantity", q5);
+    p5 = 0.0;
+    if (price_5 != null && price_5 != "")
+    {
+        p5 = price_5.toDecimal();
+    }
+    item5.put("rate", p5);
+    lineItems.add(item5);
+}
+
+// Line item 6
+if (name_6 != null && name_6 != "")
+{
+    item6 = Map();
+    item6.put("name", name_6);
+    q6 = 1;
+    if (qty_6 != null && qty_6 != "")
+    {
+        q6 = qty_6.toLong();
+    }
+    item6.put("quantity", q6);
+    p6 = 0.0;
+    if (price_6 != null && price_6 != "")
+    {
+        p6 = price_6.toDecimal();
+    }
+    item6.put("rate", p6);
+    lineItems.add(item6);
+}
+
+// Line item 7
+if (name_7 != null && name_7 != "")
+{
+    item7 = Map();
+    item7.put("name", name_7);
+    q7 = 1;
+    if (qty_7 != null && qty_7 != "")
+    {
+        q7 = qty_7.toLong();
+    }
+    item7.put("quantity", q7);
+    p7 = 0.0;
+    if (price_7 != null && price_7 != "")
+    {
+        p7 = price_7.toDecimal();
+    }
+    item7.put("rate", p7);
+    lineItems.add(item7);
+}
+
+// Line item 8
+if (name_8 != null && name_8 != "")
+{
+    item8 = Map();
+    item8.put("name", name_8);
+    q8 = 1;
+    if (qty_8 != null && qty_8 != "")
+    {
+        q8 = qty_8.toLong();
+    }
+    item8.put("quantity", q8);
+    p8 = 0.0;
+    if (price_8 != null && price_8 != "")
+    {
+        p8 = price_8.toDecimal();
+    }
+    item8.put("rate", p8);
+    lineItems.add(item8);
+}
+
+// Fallback: if no line items at all, add a placeholder
+if (lineItems.size() == 0)
+{
+    placeholder = Map();
+    placeholder.put("name", "Quote Request - See Notes");
+    placeholder.put("quantity", 1);
+    placeholder.put("rate", 0.0);
+    lineItems.add(placeholder);
+}
+
+// ---- STEP 4: Create estimate ----
+noteText = "";
+if (preferred_date != null && preferred_date != "")
+{
+    noteText = noteText + "Preferred Date: " + preferred_date + "\n";
+}
+if (preferred_time != null && preferred_time != "")
+{
+    noteText = noteText + "Preferred Time: " + preferred_time + "\n";
+}
+if (phone != null && phone != "")
+{
+    noteText = noteText + "Phone: " + phone + "\n";
+}
+if (extra != null && extra != "")
+{
+    noteText = noteText + "Customer Notes: " + extra;
+}
+
+estimateBody = Map();
+estimateBody.put("customer_id", contactId);
+estimateBody.put("line_items", lineItems);
+if (noteText != "")
+{
+    estimateBody.put("notes", noteText.trim());
+}
+
+estimateResp = invokeurl
+[
+    url: baseUrl + "/estimates?organization_id=" + orgId
+    type: POST
+    parameters: estimateBody.toString()
+    headers: {"Content-Type":"application/json"}
+    connection: "zoho_invoice"
+];
+
+info "Create estimate response: " + estimateResp;
+return "Estimate created for " + ifnull(first_name, "") + " " + ifnull(last_name, "");
+
+=== SCRIPT END ===
+
+=====================================================
+STEP 6: SET UP FORMSPREE WEBHOOK
+=====================================================
+
+This makes Formspree automatically forward submissions to Zoho Flow
+(server-to-server, no browser CORS issues).
+
+1. Go to https://formspree.io/forms/mdapogko/plugins
+2. Add "Webhook" plugin
+3. Paste your Zoho Flow webhook URL:
+   https://flow.zoho.com/919075448/flow/webhook/incoming?zapikey=1001.1a9d5fcdfdf877a65341cf739f145491.36aadc8cde80059e1d49303feb2e751a&isdebug=false
+4. Save
+
+NOTE: The webhook plugin may require a paid Formspree plan ($10/mo).
+If not available, the website also sends directly to Zoho Flow
+(may work depending on CORS settings).
+
+=====================================================
+STEP 7: TURN ON THE FLOW
+=====================================================
+
+1. Save the flow
+2. Click "Turn On" to activate it
+3. Test by submitting a quote from the website with items in cart
+4. Check Zoho Invoice for the new contact + estimate
+
+=====================================================
+TROUBLESHOOTING
+=====================================================
+
+- "Connection not found" → Make sure the connection is named exactly: zoho_invoice
+- "Contact not accessible" → Re-authorize the Zoho Invoice connection
+- "Invalid organization" → Verify org ID is 919077911 in Zoho Invoice settings
+- Line items show $0 → The website sends "Starting at" prices; update in Zoho Invoice
+- Estimate not created → Check Zoho Flow execution history for error details

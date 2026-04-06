@@ -1,0 +1,46 @@
+Item Name,Description,Rate,Item Type,Unit
+Mowing,Lawn mowing - priced by yard size,0,Service,
+Weed Eating,Trimming around edges trees docks and tight areas,35,Service,
+Trimming & Edging,Crisp lines along sidewalks driveways and landscaping,30,Service,
+Spraying,Weed control and spot spraying,45,Service,
+Seeding,Overseeding and patch repair to thicken turf,85,Service,
+Spring / Fall Cleanup,Leaves sticks and seasonal debris removal,120,Service,
+Driveway Washing,Pressure wash driveway - priced by size,0,Service,
+House Washing,Pressure wash house siding - priced by size,0,Service,
+Gutter Cleaning,Clean gutters - priced by home size,0,Service,
+Deck / Patio Washing,Pressure wash deck or patio - priced by size,0,Service,
+Sidewalks & Steps,Pressure wash sidewalks and steps - priced by size,0,Service,
+Dock / Boathouse Washing,Pressure wash dock or boathouse - priced by size,0,Service,
+Junk Removal - Small Load,A few items or 1-2 bulky pieces,75,Service,
+Junk Removal - Quarter Truck,Small room or garage corner,125,Service,
+Junk Removal - Half Truck,1-2 rooms light furniture,200,Service,
+Junk Removal - Three Quarter Truck,Basement or larger cleanout,275,Service,
+Junk Removal - Full Truck,Estate remodel or big cleanout,375,Service,
+Small Windows - 1st Story,Window washing up to 2x3 ft 1st floor,6,Service,
+Small Windows - 2nd Story,Window washing up to 2x3 ft 2nd floor,9,Service,
+Small Windows - 3rd+ Story,Window washing up to 2x3 ft 3rd floor+,13,Service,
+Medium Windows - 1st Story,Window washing 3x4 to 3x5 ft 1st floor,10,Service,
+Medium Windows - 2nd Story,Window washing 3x4 to 3x5 ft 2nd floor,14,Service,
+Medium Windows - 3rd+ Story,Window washing 3x4 to 3x5 ft 3rd floor+,20,Service,
+Large / Picture Windows - 1st Story,Window washing 4x5 ft+ 1st floor,15,Service,
+Large / Picture Windows - 2nd Story,Window washing 4x5 ft+ 2nd floor,22,Service,
+Large / Picture Windows - 3rd+ Story,Window washing 4x5 ft+ 3rd floor+,30,Service,
+Screens / Tracks Cleaning,Screen and track cleaning per screen,4,Service,
+Driveway Clearing,Snow removal for driveway,50,Service,
+Sidewalk Clearing,Snow removal for sidewalks,30,Service,
+Salting,Ice melt application,25,Service,
+Driveway Installation,New concrete driveway,9,Service,sq ft
+Patio Installation,New concrete patio,10,Service,sq ft
+Sidewalk Installation,New concrete sidewalk,8,Service,sq ft
+Concrete Repair,Crack repair and patching,7,Service,sq ft
+Concrete Sealing,Protective sealant for concrete,2,Service,sq ft
+Concrete Overlay,Decorative overlay on existing concrete,12,Service,sq ft
+Steps / Stairs,Concrete steps or stairs,15,Service,sq ft
+Mulch Installation,Fresh mulch for beds and borders,180,Service,
+Rock Installation,Decorative rock for low-maintenance landscaping,250,Service,
+Bed Edging,Define and clean landscape bed edges,120,Service,
+Shrub Trimming,Trim and shape shrubs,95,Service,
+Bush / Shrub Removal,Remove overgrown shrubs with cleanup,140,Service,
+Small Tree Trimming,Prune lower branches and improve appearance,125,Service,
+Landscape Cleanup,Remove leaves sticks and debris from beds,110,Service,
+Handyman Services,Small repairs installs and punch lists,0,Service,
