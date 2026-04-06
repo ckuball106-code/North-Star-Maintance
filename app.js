@@ -1366,6 +1366,16 @@ quoteForm.addEventListener('submit', (e) => {
       document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
       document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
     }
+
+    // Build pipe-separated line items for Zoho Flow: name|qty|price;;name|qty|price
+    const lineItemParts = [];
+    for (let i = 1; i <= 12; i++) {
+      const n = payload[`name_${i}`];
+      if (n) {
+        lineItemParts.push(`${n}|${payload[`qty_${i}`] || 1}|${payload[`price_${i}`] || 0}`);
+      }
+    }
+    document.getElementById('hiddenLineItemsData').value = lineItemParts.join(';;');
   } catch (err) {
     console.error('Error populating hidden fields:', err);
   }

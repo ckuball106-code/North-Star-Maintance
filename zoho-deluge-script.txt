@@ -1,0 +1,143 @@
+{
+orgId = "919077911";
+baseUrl = "https://www.zohoapis.com/invoice/v3";
+contactId = "";
+
+if(email != null && email != "")
+{
+searchUrl = baseUrl + "/contacts?organization_id=" + orgId + "&email=" + encodeUrl(email);
+searchResp = invokeurl
+[
+url: searchUrl
+type: GET
+connection: "zoho_invoice"
+];
+contactsList = searchResp.get("contacts");
+if(contactsList != null && contactsList.size() > 0)
+{
+contactId = contactsList.get(0).get("contact_id").toString();
+}
+}
+
+if(contactId == "")
+{
+fullName = ifnull(first_name,"") + " " + ifnull(last_name,"");
+fullName = fullName.trim();
+if(fullName == "")
+{
+fullName = "Unknown Customer";
+}
+personObj = Map();
+personObj.put("first_name",ifnull(first_name,""));
+personObj.put("last_name",ifnull(last_name,""));
+personObj.put("is_primary_contact",true);
+if(email != null && email != "")
+{
+personObj.put("email",email);
+}
+if(phone != null && phone != "")
+{
+personObj.put("phone",phone);
+}
+addrObj = Map();
+if(address != null && address != "")
+{
+addrObj.put("street",address);
+}
+if(city != null && city != "")
+{
+addrObj.put("city",city);
+}
+if(state != null && state != "")
+{
+addrObj.put("state",state);
+}
+addrObj.put("country","U.S.A.");
+contactBody = Map();
+contactBody.put("contact_name",fullName);
+contactBody.put("contact_type","customer");
+personsList = List();
+personsList.add(personObj);
+contactBody.put("contact_persons",personsList);
+contactBody.put("billing_address",addrObj);
+createResp = invokeurl
+[
+url: baseUrl + "/contacts?organization_id=" + orgId
+type: POST
+parameters: contactBody.toString()
+headers: {"Content-Type":"application/json"}
+connection: "zoho_invoice"
+];
+contactId = createResp.get("contact").get("contact_id").toString();
+}
+
+lineItems = List();
+if(line_items_data != null && line_items_data != "")
+{
+items = line_items_data.split(";;");
+for each  entry in items
+{
+parts = entry.split("\\|");
+if(parts.size() >= 1)
+{
+lineItem = Map();
+lineItem.put("name",parts.get(0));
+qty = 1;
+if(parts.size() >= 2 && parts.get(1) != "")
+{
+qty = parts.get(1).toLong();
+}
+lineItem.put("quantity",qty);
+rate = 0.0;
+if(parts.size() >= 3 && parts.get(2) != "")
+{
+rate = parts.get(2).toDecimal();
+}
+lineItem.put("rate",rate);
+lineItems.add(lineItem);
+}
+}
+}
+if(lineItems.size() == 0)
+{
+ph = Map();
+ph.put("name","Quote Request - See Notes");
+ph.put("quantity",1);
+ph.put("rate",0.0);
+lineItems.add(ph);
+}
+
+noteText = "";
+if(preferred_date != null && preferred_date != "")
+{
+noteText = noteText + "Preferred Date: " + preferred_date + "\n";
+}
+if(preferred_time != null && preferred_time != "")
+{
+noteText = noteText + "Preferred Time: " + preferred_time + "\n";
+}
+if(phone != null && phone != "")
+{
+noteText = noteText + "Phone: " + phone + "\n";
+}
+if(extra != null && extra != "")
+{
+noteText = noteText + "Customer Notes: " + extra;
+}
+estimateBody = Map();
+estimateBody.put("customer_id",contactId);
+estimateBody.put("line_items",lineItems);
+if(noteText != "")
+{
+estimateBody.put("notes",noteText.trim());
+}
+estimateResp = invokeurl
+[
+url: baseUrl + "/estimates?organization_id=" + orgId
+type: POST
+parameters: estimateBody.toString()
+headers: {"Content-Type":"application/json"}
+connection: "zoho_invoice"
+];
+return "Estimate created for " + ifnull(first_name,"") + " " + ifnull(last_name,"");
+}
