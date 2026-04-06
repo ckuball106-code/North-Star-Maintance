@@ -1340,6 +1340,14 @@ function buildZapierPayload(total, cartText){
       return acc;
     }, {}),
     estimated_total: total,
+    // Build pipe-separated line items for Zoho Flow: name|qty|price;;name|qty|price
+    line_items_data: Array.from({ length: 12 }).reduce((parts, _, i) => {
+      const item = lineItems[i];
+      if (item) {
+        parts.push(`[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`);
+      }
+      return parts;
+    }, []).join(';;'),
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
   };
@@ -1432,13 +1440,15 @@ quoteForm.addEventListener('submit', (e) => {
     .then(data => Boolean(data && data.ok))
     .catch((err) => { console.error('Formspree error:', err); return false; });
 
-  // Send to Zoho Flow (backup — may fail due to CORS, that's OK)
+  // Send to Zoho Flow — use no-cors + text/plain to bypass browser CORS restrictions.
+  // The request still reaches Zoho Flow; we just can't read the response.
   const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   })
-    .then(r => r.ok)
+    .then(() => true)
     .catch(() => false);
 
   Promise.all([formspreeRequest, zohoFlowRequest])

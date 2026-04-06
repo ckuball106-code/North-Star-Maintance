@@ -3,30 +3,88 @@ orgId = "919077911";
 baseUrl = "https://www.zohoapis.com/invoice/v3";
 contactId = "";
 
+info "=== SCRIPT START ===";
+info "Email: " + ifnull(email,"NULL");
+info "First: " + ifnull(first_name,"NULL");
+info "Last: " + ifnull(last_name,"NULL");
+
+// STEP 1: Search for existing contact
 if(email != null && email != "")
 {
 searchUrl = baseUrl + "/contacts?organization_id=" + orgId + "&email=" + encodeUrl(email);
+info "Search URL: " + searchUrl;
 searchResp = invokeurl
 [
 url: searchUrl
 type: GET
 connection: "zoho_invoice"
 ];
+info "Search response: " + searchResp;
 contactsList = searchResp.get("contacts");
 if(contactsList != null && contactsList.size() > 0)
 {
 contactId = contactsList.get(0).get("contact_id").toString();
+info "Found existing contact: " + contactId;
+}
+else
+{
+info "No existing contact found for email";
 }
 }
 
+// STEP 2: Create contact if not found
 if(contactId == "")
 {
 fullName = ifnull(first_name,"") + " " + ifnull(last_name,"");
 fullName = fullName.trim();
 if(fullName == "")
 {
-fullName = "Unknown Customer";
+fullName = "Customer " + zoho.currenttime.toString("yyyyMMdd-HHmmss","America/Chicago");
 }
+info "Creating contact: " + fullName;
+
+// Try simplest possible contact first - just name
+simpleBody = Map();
+simpleBody.put("contact_name",fullName);
+info "Simple body: " + simpleBody.toString();
+
+createResp = invokeurl
+[
+url: baseUrl + "/contacts?organization_id=" + orgId
+type: POST
+parameters: simpleBody.toString()
+headers: {"Content-Type":"application/json"}
+connection: "zoho_invoice"
+];
+info "Create response: " + createResp;
+
+// If name already exists, search for them instead
+if(createResp != null && createResp.get("code") != null && createResp.get("code") == 3062)
+{
+info "Contact already exists, searching by name: " + fullName;
+nameSearchResp = invokeurl
+[
+url: baseUrl + "/contacts?organization_id=" + orgId + "&contact_name=" + encodeUrl(fullName)
+type: GET
+connection: "zoho_invoice"
+];
+info "Name search response: " + nameSearchResp;
+nameList = nameSearchResp.get("contacts");
+if(nameList != null && nameList.size() > 0)
+{
+contactId = nameList.get(0).get("contact_id").toString();
+info "Found existing contact by name: " + contactId;
+}
+}
+
+if(contactId == "" && createResp != null && createResp.get("contact") != null)
+{
+contactId = createResp.get("contact").get("contact_id").toString();
+info "Created contact ID: " + contactId;
+
+// Now update with full details
+updateBody = Map();
+updateBody.put("contact_type","customer");
 personObj = Map();
 personObj.put("first_name",ifnull(first_name,""));
 personObj.put("last_name",ifnull(last_name,""));
@@ -39,6 +97,9 @@ if(phone != null && phone != "")
 {
 personObj.put("phone",phone);
 }
+personsList = List();
+personsList.add(personObj);
+updateBody.put("contact_persons",personsList);
 addrObj = Map();
 if(address != null && address != "")
 {
@@ -53,31 +114,32 @@ if(state != null && state != "")
 addrObj.put("state",state);
 }
 addrObj.put("country","U.S.A.");
-contactBody = Map();
-contactBody.put("contact_name",fullName);
-contactBody.put("contact_type","customer");
-personsList = List();
-personsList.add(personObj);
-contactBody.put("contact_persons",personsList);
-contactBody.put("billing_address",addrObj);
-createResp = invokeurl
+updateBody.put("billing_address",addrObj);
+
+updateResp = invokeurl
 [
-url: baseUrl + "/contacts?organization_id=" + orgId
-type: POST
-parameters: contactBody.toString()
+url: baseUrl + "/contacts/" + contactId + "?organization_id=" + orgId
+type: PUT
+parameters: updateBody.toString()
 headers: {"Content-Type":"application/json"}
 connection: "zoho_invoice"
 ];
-contactId = createResp.get("contact").get("contact_id").toString();
+info "Update contact response: " + updateResp;
+}
+else
+{
+info "CONTACT CREATION FAILED. Response was: " + createResp;
+return "Error: Could not create contact. Response: " + createResp;
+}
 }
 
 lineItems = List();
 if(line_items_data != null && line_items_data != "")
 {
-items = line_items_data.split(";;");
+items = line_items_data.toList(";;");
 for each  entry in items
 {
-parts = entry.split("\\|");
+parts = entry.toList("|");
 if(parts.size() >= 1)
 {
 lineItem = Map();
@@ -124,6 +186,13 @@ if(extra != null && extra != "")
 {
 noteText = noteText + "Customer Notes: " + extra;
 }
+if(contactId == "")
+{
+return "Error: Could not create or find contact";
+}
+info "=== CREATING ESTIMATE ===";
+info "Contact ID: " + contactId;
+info "Line items count: " + lineItems.size();
 estimateBody = Map();
 estimateBody.put("customer_id",contactId);
 estimateBody.put("line_items",lineItems);
@@ -131,6 +200,7 @@ if(noteText != "")
 {
 estimateBody.put("notes",noteText.trim());
 }
+info "Estimate body: " + estimateBody.toString();
 estimateResp = invokeurl
 [
 url: baseUrl + "/estimates?organization_id=" + orgId
@@ -139,5 +209,6 @@ parameters: estimateBody.toString()
 headers: {"Content-Type":"application/json"}
 connection: "zoho_invoice"
 ];
+info "Estimate response: " + estimateResp;
 return "Estimate created for " + ifnull(first_name,"") + " " + ifnull(last_name,"");
 }
