@@ -1440,28 +1440,56 @@ quoteForm.addEventListener('submit', (e) => {
     .then(data => Boolean(data && data.ok))
     .catch((err) => { console.error('Formspree error:', err); return false; });
 
-  // Send to Zoho Flow — use no-cors + form-urlencoded to bypass CORS and let Zoho parse the fields.
-  const zohoParams = new URLSearchParams();
-  zohoParams.set('first_name', payload.first_name || '');
-  zohoParams.set('last_name', payload.last_name || '');
-  zohoParams.set('email', payload.email || '');
-  zohoParams.set('phone', payload.phone || '');
-  zohoParams.set('address', payload.address || '');
-  zohoParams.set('city', payload.city || '');
-  zohoParams.set('state', payload.state || '');
-  zohoParams.set('preferred_date', payload.preferred_date || '');
-  zohoParams.set('preferred_time', payload.preferred_time || '');
-  zohoParams.set('extra', payload.extra || '');
-  zohoParams.set('estimated_total', String(payload.estimated_total || ''));
-  zohoParams.set('line_items_data', payload.line_items_data || '');
-  const zohoFlowRequest = fetch(ZOHO_FLOW_WEBHOOK_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: zohoParams.toString()
-  })
-    .then(() => true)
-    .catch(() => false);
+  // Send to Zoho Flow via hidden iframe form POST — bypasses CORS completely.
+  const zohoFlowRequest = new Promise((resolve) => {
+    try {
+      // Create hidden iframe
+      let iframe = document.getElementById('zohoFlowIframe');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'zohoFlowIframe';
+        iframe.name = 'zohoFlowIframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
+      // Create hidden form
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = ZOHO_FLOW_WEBHOOK_URL;
+      form.target = 'zohoFlowIframe';
+      form.style.display = 'none';
+      // Add all 12 fields
+      const fields = {
+        first_name: payload.first_name || '',
+        last_name: payload.last_name || '',
+        email: payload.email || '',
+        phone: payload.phone || '',
+        address: payload.address || '',
+        city: payload.city || '',
+        state: payload.state || '',
+        preferred_date: payload.preferred_date || '',
+        preferred_time: payload.preferred_time || '',
+        extra: payload.extra || '',
+        estimated_total: String(payload.estimated_total || ''),
+        line_items_data: payload.line_items_data || ''
+      };
+      for (const [key, val] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = val;
+        form.appendChild(input);
+      }
+      document.body.appendChild(form);
+      form.submit();
+      // Cleanup after a short delay
+      setTimeout(() => { form.remove(); }, 3000);
+      resolve(true);
+    } catch (err) {
+      console.error('Zoho Flow iframe error:', err);
+      resolve(false);
+    }
+  });
 
   Promise.all([formspreeRequest, zohoFlowRequest])
     .then(([formspreeOk, zohoFlowOk]) => {
