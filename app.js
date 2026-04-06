@@ -257,6 +257,15 @@ const yardOptions = document.getElementById('yardOptions');
 const yardTitle = document.getElementById('yardTitle');
 const yardSubtitle = document.getElementById('yardSubtitle');
 
+// Window quantity modal
+const winQtyModal = document.getElementById('winQtyModal');
+const winQtyClose = document.getElementById('winQtyClose');
+const winQtyCancel = document.getElementById('winQtyCancel');
+const winQtyConfirm = document.getElementById('winQtyConfirm');
+const winQtyInput = document.getElementById('winQtyInput');
+const winQtyTitle = document.getElementById('winQtyTitle');
+const winQtySubtitle = document.getElementById('winQtySubtitle');
+
 // Square footage modal (for concrete work)
 const sqftModal = document.getElementById('sqftModal');
 const sqftClose = document.getElementById('sqftClose');
@@ -631,6 +640,25 @@ function closeFreqModal(){
   window.currentFreqContext = null;
 }
 
+function openWinQtyModal(menuKey, menu, itemName, price){
+  window.currentWinQtyContext = { menuKey, menu, itemName, price };
+  winQtyTitle.textContent = `How many: ${itemName}?`;
+  winQtySubtitle.textContent = `$${price}/window — enter the number of windows.`;
+  winQtyInput.value = '1';
+  winQtyModal.style.display = 'block';
+  winQtyModal.classList.add('open');
+  modalBackdrop.classList.add('open');
+  setTimeout(() => { try { winQtyInput.focus(); winQtyInput.select(); } catch(e){} }, 0);
+}
+
+function closeWinQtyModal(){
+  winQtyModal.classList.remove('open');
+  winQtyModal.style.display = 'none';
+  if (!modal.classList.contains('open') && !quoteModal.classList.contains('open') && !noteModal.classList.contains('open')){
+    modalBackdrop.classList.remove('open');
+  }
+}
+
 function openSqftModal(menuKey, menu, itemName, price){
   const matched = menu && Array.isArray(menu.items)
     ? menu.items.find(i => i.name === itemName)
@@ -794,6 +822,12 @@ modalGrid.addEventListener('click', e => {
   }
   if (menuKey === 'snow' && itemName === 'Salting'){
     openSaltModal();
+    return;
+  }
+
+  // For window washing, open quantity picker
+  if (menuKey === 'windows'){
+    openWinQtyModal(menuKey, menu, itemName, price);
     return;
   }
 
@@ -1204,7 +1238,7 @@ function addItem(category, name, price, opts = {}){
     return false;
   }
 
-  group.items.set(name, { qty: 1, note: '', price });
+  group.items.set(name, { qty: opts.qty || 1, note: '', price });
 
   renderCart();
   if (shouldOpenCart) openCart();
@@ -1631,6 +1665,18 @@ loadGalleryPhotos();
 // =============================
 // Square Footage Modal Events
 // =============================
+// Window quantity modal events
+if (winQtyClose) winQtyClose.addEventListener('click', closeWinQtyModal);
+if (winQtyCancel) winQtyCancel.addEventListener('click', closeWinQtyModal);
+if (winQtyConfirm) winQtyConfirm.addEventListener('click', () => {
+  const ctx = window.currentWinQtyContext;
+  if (!ctx) return;
+  const qty = Math.max(1, parseInt(winQtyInput.value) || 1);
+  addItem(ctx.menu.category, ctx.itemName, ctx.price, { qty });
+  closeWinQtyModal();
+  closeModal();
+});
+
 if (sqftClose) sqftClose.addEventListener('click', closeSqftModal);
 if (sqftSkip) sqftSkip.addEventListener('click', () => {
   const ctx = window.currentSqftContext;

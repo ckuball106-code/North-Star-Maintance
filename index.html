@@ -650,6 +650,25 @@
     </div>
   </div>
 
+  <!-- Window Quantity Modal -->
+  <div class="modal" id="winQtyModal">
+    <div class="modal-head">
+      <b id="winQtyTitle">How many windows?</b>
+      <button class="iconbtn" id="winQtyClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="muted" id="winQtySubtitle">Enter the number of windows for this size.</p>
+      <div class="form-group">
+        <label for="winQtyInput">Number of Windows</label>
+        <input type="number" id="winQtyInput" placeholder="e.g., 5" min="1" value="1" style="padding:12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); width:100%; font-size:16px;">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="winQtyCancel">Cancel</button>
+      <button class="btn primary" id="winQtyConfirm">Add to Cart</button>
+    </div>
+  </div>
+
   <!-- Square Footage Modal (for concrete work) -->
   <div class="modal" id="sqftModal">
     <div class="modal-head">
