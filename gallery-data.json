@@ -1,6 +1,15 @@
 {
   "photos": [
     {
+      "id": 1775586340490,
+      "title": "TEST",
+      "description": "",
+      "imageUrl": "https://ckuball106-code.github.io/North-Star-Maintance/photos/1775586339348.jpg",
+      "category": "concrete",
+      "slideshow": true,
+      "dateAdded": "2026-04-07T18:25:40.490Z"
+    },
+    {
       "id": 1,
       "title": "Lawn Care",
       "description": "Pristine lawn maintenance",
