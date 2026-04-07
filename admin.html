@@ -6,225 +6,91 @@
   <title>Gallery Admin - North Star Maintenance</title>
   <link rel="stylesheet" href="./styles.css">
   <style>
-    .admin-container {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    
-    .admin-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    .photo-form {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 30px;
-    }
-    
-    .form-row {
-      margin-bottom: 16px;
-    }
-    
-    .form-row label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: var(--brand2);
-    }
-    
-    .form-row input,
-    .form-row textarea,
-    .form-row select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
-    }
-    
-    .form-row select option {
-      background: #1a2420;
-      color: #f3f0e6;
-      padding: 8px;
-    }
-    
-    .form-row textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    
-    .helper-text {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-    
-    .photo-list {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    
-    .photo-item {
-      display: flex;
-      gap: 16px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      margin-bottom: 12px;
-      align-items: center;
-    }
-    
-    .photo-item img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    
-    .photo-info {
-      flex: 1;
-    }
-    
-    .photo-info h4 {
-      margin: 0 0 4px 0;
-      color: var(--brand2);
-    }
-    
-    .photo-info p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    
-    .btn-delete {
-      background: rgba(255,59,48,.2);
-      border: 1px solid rgba(255,59,48,.4);
-      color: #ff3b30;
-    }
-    
-    .btn-delete:hover {
-      background: rgba(255,59,48,.3);
-    }
-    
-    .success-msg {
-      background: rgba(47,107,79,.2);
-      border: 1px solid var(--brand);
-      color: var(--brand2);
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    .instructions {
-      background: rgba(201,154,74,.1);
-      border: 1px solid rgba(201,154,74,.3);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    
-    .instructions h3 {
-      margin: 0 0 12px 0;
-      color: var(--brand2);
-    }
-    
-    .instructions ol {
-      margin: 8px 0;
-      padding-left: 20px;
-    }
-    
-    .instructions li {
-      margin: 6px 0;
-      color: var(--muted);
-    }
+    #loginGate { max-width:400px; margin:120px auto; padding:30px; text-align:center; }
+    #loginGate input { width:100%; padding:14px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-size:16px; margin:16px 0; text-align:center; }
+    #loginError { color:#ff3b30; font-size:13px; display:none; margin-bottom:10px; }
+    .admin-container { max-width:800px; margin:40px auto; padding:20px; display:none; }
+    .admin-header { text-align:center; margin-bottom:30px; }
+    .photo-form { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:30px; }
+    .form-row { margin-bottom:16px; }
+    .form-row label { display:block; margin-bottom:6px; font-weight:600; color:var(--brand2); }
+    .form-row input, .form-row textarea, .form-row select { width:100%; padding:12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-family:inherit; font-size:14px; }
+    .form-row select option { background:#1a2420; color:#f3f0e6; }
+    .form-row textarea { min-height:80px; resize:vertical; }
+    .helper-text { font-size:12px; color:var(--muted); margin-top:4px; }
+    .photo-list { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; }
+    .photo-item { display:flex; gap:16px; padding:16px; border:1px solid var(--line); border-radius:8px; margin-bottom:12px; align-items:center; }
+    .photo-item img { width:100px; height:100px; object-fit:cover; border-radius:8px; }
+    .photo-info { flex:1; }
+    .photo-info h4 { margin:0 0 4px; color:var(--brand2); }
+    .photo-info p { margin:4px 0; font-size:14px; color:var(--muted); }
+    .btn-delete { background:rgba(255,59,48,.2); border:1px solid rgba(255,59,48,.4); color:#ff3b30; }
+    .btn-delete:hover { background:rgba(255,59,48,.3); }
+    .success-msg { background:rgba(47,107,79,.2); border:1px solid var(--brand); color:var(--brand2); padding:12px 16px; border-radius:8px; margin-bottom:20px; text-align:center; }
+    .saving-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999; }
+    .saving-overlay .msg { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:30px 40px; text-align:center; font-size:16px; }
+    .instructions { background:rgba(201,154,74,.1); border:1px solid rgba(201,154,74,.3); border-radius:8px; padding:16px; margin-bottom:20px; }
+    .instructions h3 { margin:0 0 12px; color:var(--brand2); }
+    .instructions ol { margin:8px 0; padding-left:20px; }
+    .instructions li { margin:6px 0; color:var(--muted); }
+    @media(max-width:600px) { .photo-item { flex-direction:column; text-align:center; } .photo-item img { width:100%; height:160px; } }
   </style>
 </head>
 <body>
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="index.html">
-      <span>North Star Maintenance</span>
-    </a>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <a class="brand" href="index.html"><span>North Star Maintenance</span></a>
     <div class="nav-actions" id="navActions">
       <a class="btn" href="index.html">Back to Site</a>
     </div>
   </div>
 </header>
 
-<div class="admin-container">
+<!-- Password Gate -->
+<div id="loginGate">
+  <h2>Gallery Admin</h2>
+  <p class="muted">Enter the admin password to continue.</p>
+  <div id="loginError">Incorrect password. Try again.</div>
+  <input type="password" id="passwordInput" placeholder="Password" autofocus>
+  <button class="btn primary" style="width:100%" onclick="checkPassword()">Log In</button>
+</div>
+
+<!-- Admin Panel (hidden until authenticated) -->
+<div class="admin-container" id="adminPanel">
   <div class="admin-header">
     <h1>Gallery Manager</h1>
-    <p class="sub">Add photos to your website gallery from anywhere</p>
+    <p class="sub">Add and manage photos — changes go live on your website instantly.</p>
   </div>
 
   <div class="instructions">
-    <h3>📱 How to Add Photos from Your Phone</h3>
+    <h3>How to Add Photos</h3>
     <ol>
-      <li><strong>Easy Way:</strong> Click "Upload from Phone" and select a photo from your camera roll</li>
-      <li><strong>Or use URL:</strong> Upload to ImgBB.com, Google Photos, or Dropbox and paste the link</li>
-      <li>Fill in the title and optional description</li>
-      <li>Choose the service category</li>
-      <li>Click "Add Photo" - it appears on your site instantly!</li>
+      <li>Go to <a href="https://imgbb.com/" target="_blank" style="color:var(--brand2)">imgbb.com</a> and upload your photo (no account needed)</li>
+      <li>Copy the <strong>direct link</strong> (the one ending in .jpg/.png)</li>
+      <li>Paste it below, add a title, pick the category</li>
+      <li>Click "Add Photo" — it goes live immediately</li>
     </ol>
-    <p style="margin:12px 0 0 0; color:var(--muted); font-size:13px;"><strong>Note:</strong> Direct uploads are stored in your browser. For best performance, keep file sizes under 2MB.</p>
   </div>
 
-  <div id="successMsg" class="success-msg" style="display:none;">
-    ✓ Photo added successfully!
-  </div>
+  <div id="successMsg" class="success-msg" style="display:none;"></div>
 
   <div class="photo-form">
     <h2>Add New Photo</h2>
     <form id="photoForm">
       <div class="form-row">
-        <label>Photo Source</label>
-        <div style="display:flex; gap:10px; margin-bottom:12px;">
-          <button type="button" class="btn" id="uploadMethodBtn" style="flex:1" onclick="toggleUploadMethod('upload')">📷 Upload from Phone</button>
-          <button type="button" class="btn" id="urlMethodBtn" style="flex:1; background:rgba(255,255,255,.02);" onclick="toggleUploadMethod('url')">🔗 Use URL</button>
-        </div>
-      </div>
-
-      <div class="form-row" id="uploadRow">
-        <label for="imageFile">Select Photo *</label>
-        <input type="file" id="imageFile" accept="image/*" capture="environment" style="padding:8px;">
-        <div class="helper-text">Choose a photo from your camera roll or take a new one</div>
-        <div id="imagePreview" style="margin-top:12px; display:none;">
-          <img id="previewImg" style="max-width:100%; height:150px; object-fit:cover; border-radius:8px; border:1px solid var(--line);">
-        </div>
-      </div>
-
-      <div class="form-row" id="urlRow" style="display:none;">
         <label for="imageUrl">Image URL *</label>
-        <input type="url" id="imageUrl" placeholder="https://example.com/photo.jpg">
-        <div class="helper-text">Upload photo to Google Photos/Dropbox, then paste the link here</div>
+        <input type="url" id="imageUrl" required placeholder="https://i.ibb.co/xxxxx/photo.jpg">
+        <div class="helper-text">Upload to <a href="https://imgbb.com/" target="_blank" style="color:var(--brand2)">imgbb.com</a>, then paste the direct image link here.</div>
       </div>
-
       <div class="form-row">
         <label for="title">Title *</label>
-        <input type="text" id="title" required placeholder="e.g., Lawn Maintenance - Johnson Property">
+        <input type="text" id="title" required placeholder="e.g., Driveway Power Wash — Maple St">
       </div>
-
       <div class="form-row">
         <label for="description">Description</label>
-        <textarea id="description" placeholder="Optional description of the work"></textarea>
+        <textarea id="description" placeholder="Optional — describe the work"></textarea>
       </div>
-
       <div class="form-row">
         <label for="category">Category *</label>
         <select id="category" required>
@@ -234,203 +100,224 @@
           <option value="handyman">Handyman Services</option>
           <option value="window-washing">Window Washing</option>
           <option value="snow-removal">Snow Removal</option>
-          <option value="before-after">Before & After</option>
-          <option value="lake-property">Lake Property Maintenance</option>
-          <option value="deck-dock">Deck & Dock Work</option>
-          <option value="gutter-cleaning">Gutter Cleaning</option>
-          <option value="spring-cleanup">Spring Cleanup</option>
-          <option value="fall-cleanup">Fall Cleanup</option>
+          <option value="concrete">Concrete Work</option>
           <option value="landscaping">Landscaping</option>
-          <option value="property-maintenance">General Property Maintenance</option>
-          <option value="rental-property">Rental Property Services</option>
-          <option value="seasonal">Seasonal Work</option>
-          <option value="commercial">Commercial Projects</option>
+          <option value="before-after">Before &amp; After</option>
+          <option value="lake-property">Lake Property</option>
           <option value="general">Other</option>
         </select>
       </div>
-
-      <button type="submit" class="btn primary" style="width:100%; margin-top:8px">
-        Add Photo to Gallery
-      </button>
+      <div class="form-row">
+        <label style="display:flex; align-items:center; cursor:pointer;">
+          <input type="checkbox" id="showInSlideshow" checked style="width:auto; margin-right:8px;">
+          Show in homepage slideshow
+        </label>
+      </div>
+      <button type="submit" class="btn primary" style="width:100%; margin-top:8px">Add Photo to Gallery</button>
     </form>
   </div>
 
   <div class="photo-list">
-    <h2>Current Gallery Photos</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2 style="margin:0;">Current Photos (<span id="photoCount">0</span>)</h2>
+    </div>
     <div id="photosList"></div>
   </div>
 </div>
 
-<footer>
-  © <span id="year"></span> North Star Maintenance
-</footer>
+<!-- Saving Overlay -->
+<div class="saving-overlay" id="savingOverlay" style="display:none;">
+  <div class="msg" id="savingMsg">Saving…</div>
+</div>
+
+<footer>© <span id="year"></span> North Star Maintenance</footer>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-let currentUploadMethod = 'upload'; // 'upload' or 'url'
-let currentImageData = null;
+// ── Config ──
+const ADMIN_PASSWORD = 'kUBALL1';
+const REPO_OWNER = 'ckuball106-code';
+const REPO_NAME = 'North-Star-Maintance';
+const FILE_PATH = 'gallery-data.json';
+const BRANCH = 'main';
 
-// Toggle between upload and URL methods
-function toggleUploadMethod(method) {
-  currentUploadMethod = method;
-  const uploadRow = document.getElementById('uploadRow');
-  const urlRow = document.getElementById('urlRow');
-  const uploadBtn = document.getElementById('uploadMethodBtn');
-  const urlBtn = document.getElementById('urlMethodBtn');
-  
-  if (method === 'upload') {
-    uploadRow.style.display = 'block';
-    urlRow.style.display = 'none';
-    uploadBtn.style.background = '';
-    urlBtn.style.background = 'rgba(255,255,255,.02)';
+let photos = [];
+let fileSha = null;
+
+// ── Password Gate ──
+document.getElementById('passwordInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+
+function checkPassword() {
+  if (document.getElementById('passwordInput').value === ADMIN_PASSWORD) {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    loadPhotos();
   } else {
-    uploadRow.style.display = 'none';
-    urlRow.style.display = 'block';
-    uploadBtn.style.background = 'rgba(255,255,255,.02)';
-    urlBtn.style.background = '';
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
   }
 }
 
-// Handle file upload and preview
-document.getElementById('imageFile').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  
-  // Check file size (warn if > 2MB)
-  if (file.size > 2 * 1024 * 1024) {
-    if (!confirm('This image is quite large (' + Math.round(file.size / 1024 / 1024) + 'MB). Large images may slow down your site. Continue anyway?')) {
-      e.target.value = '';
-      return;
-    }
+// ── GitHub API ──
+function getToken() {
+  var token = localStorage.getItem('gh_gallery_token');
+  if (!token) {
+    token = prompt(
+      'One-time setup: Enter a GitHub Personal Access Token.\n\n' +
+      '1. Go to github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens\n' +
+      '2. Click "Generate new token"\n' +
+      '3. Name it "Gallery Admin"\n' +
+      '4. Under Repository access, select "Only select repositories" → pick North-Star-Maintance\n' +
+      '5. Under Permissions → Repository permissions → Contents → set to "Read and write"\n' +
+      '6. Click Generate token and paste it here'
+    );
+    if (token) localStorage.setItem('gh_gallery_token', token.trim());
   }
-  
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    currentImageData = event.target.result;
-    document.getElementById('previewImg').src = currentImageData;
-    document.getElementById('imagePreview').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-});
-
-// Load photos from localStorage (fallback to gallery-data.json)
-let photos = JSON.parse(localStorage.getItem('galleryPhotos')) || [];
-
-// If no photos in localStorage, load from JSON file
-if (photos.length === 0) {
-  fetch('./gallery-data.json')
-    .then(r => r.json())
-    .then(data => {
-      photos = data.photos || [];
-      localStorage.setItem('galleryPhotos', JSON.stringify(photos));
-      renderPhotos();
-    })
-    .catch(err => {
-      console.log('No existing gallery data');
-      renderPhotos();
-    });
-} else {
-  renderPhotos();
+  return token ? token.trim() : null;
 }
 
-// Handle form submission
-document.getElementById('photoForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  let imageUrl;
-  
-  // Get image URL based on upload method
-  if (currentUploadMethod === 'upload') {
-    if (!currentImageData) {
-      alert('Please select an image first');
-      return;
+async function githubGet() {
+  var resp = await fetch(
+    'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH + '?ref=' + BRANCH,
+    { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+  );
+  if (!resp.ok) return null;
+  var data = await resp.json();
+  fileSha = data.sha;
+  var decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+  return JSON.parse(decoded);
+}
+
+async function githubPut(data, message) {
+  var token = getToken();
+  if (!token) { alert('GitHub token is required to save photos.'); return false; }
+  var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  var body = { message: message, content: content, sha: fileSha, branch: BRANCH };
+  var resp = await fetch(
+    'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH,
+    {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     }
-    imageUrl = currentImageData; // Use base64 data URL
-  } else {
-    imageUrl = document.getElementById('imageUrl').value.trim();
-    if (!imageUrl) {
-      alert('Please enter an image URL');
-      return;
-    }
+  );
+  if (resp.ok) {
+    var result = await resp.json();
+    fileSha = result.content.sha;
+    return true;
   }
-  
-  const title = document.getElementById('title').value.trim();
-  if (!title) {
-    alert('Please enter a title');
-    return;
+  if (resp.status === 401 || resp.status === 403) {
+    localStorage.removeItem('gh_gallery_token');
+    alert('GitHub token expired or invalid. It has been cleared. Please try again.');
+    return false;
   }
-  
-  const newPhoto = {
-    id: Date.now(),
-    title: title,
-    description: document.getElementById('description').value.trim() || '',
-    imageUrl: imageUrl,
-    category: document.getElementById('category').value,
-    dateAdded: new Date().toISOString()
-  };
-  
-  console.log('Adding photo:', newPhoto);
-  
-  photos.unshift(newPhoto); // Add to beginning
-  
+  var err = {};
+  try { err = await resp.json(); } catch(e) {}
+  alert('Error saving: ' + (err.message || resp.statusText));
+  return false;
+}
+
+// ── Load ──
+async function loadPhotos() {
+  showSaving('Loading photos…');
   try {
-    localStorage.setItem('galleryPhotos', JSON.stringify(photos));
-    console.log('Saved to localStorage. Total photos:', photos.length);
-  } catch(err) {
-    alert('Error saving photo: ' + err.message + '. Your photo file might be too large.');
-    photos.shift(); // Remove the photo we just added
-    return;
+    var data = await githubGet();
+    photos = (data && data.photos) ? data.photos : [];
+  } catch (e) {
+    try {
+      var resp = await fetch('./gallery-data.json?t=' + Date.now());
+      var data2 = await resp.json();
+      photos = data2.photos || [];
+    } catch (e2) { photos = []; }
   }
-  
-  // Show success message
-  const successMsg = document.getElementById('successMsg');
-  successMsg.style.display = 'block';
-  setTimeout(() => successMsg.style.display = 'none', 3000);
-  
-  // Reset form and preview
-  this.reset();
-  currentImageData = null;
-  document.getElementById('imagePreview').style.display = 'none';
-  
-  // Re-render photos
+  hideSaving();
   renderPhotos();
-  
-  // Scroll to see success message
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+}
 
-// Render photos list
+// ── Save ──
+async function savePhotos(message) {
+  showSaving('Publishing to website…');
+  var ok = await githubPut({ photos: photos }, message || 'Update gallery');
+  hideSaving();
+  return ok;
+}
+
+// ── UI ──
+function showSaving(msg) { document.getElementById('savingMsg').textContent = msg || 'Saving…'; document.getElementById('savingOverlay').style.display = 'flex'; }
+function hideSaving() { document.getElementById('savingOverlay').style.display = 'none'; }
+
+function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+var categoryNames = {
+  'lawn-care':'Lawn Care','pressure-washing':'Pressure Washing','junk-removal':'Junk Removal',
+  'handyman':'Handyman','window-washing':'Window Washing','snow-removal':'Snow Removal',
+  'concrete':'Concrete','landscaping':'Landscaping','before-after':'Before & After',
+  'lake-property':'Lake Property','general':'Other'
+};
+
 function renderPhotos() {
-  const container = document.getElementById('photosList');
-  
+  var container = document.getElementById('photosList');
+  document.getElementById('photoCount').textContent = photos.length;
   if (photos.length === 0) {
     container.innerHTML = '<p class="muted">No photos yet. Add your first one above!</p>';
     return;
   }
-  
-  container.innerHTML = photos.map(photo => `
-    <div class="photo-item">
-      <img src="${photo.imageUrl}" alt="${photo.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23333%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23666%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-      <div class="photo-info">
-        <h4>${photo.title}</h4>
-        <p>${photo.description || 'No description'}</p>
-        <p><span class="badge">${photo.category}</span></p>
-      </div>
-      <button class="btn btn-delete" onclick="deletePhoto(${photo.id})">Delete</button>
-    </div>
-  `).join('');
+  container.innerHTML = photos.map(function(photo) {
+    return '<div class="photo-item">' +
+      '<img src="' + esc(photo.imageUrl) + '" alt="' + esc(photo.title) + '" onerror="this.style.background=\'#333\';this.alt=\'Image not found\';">' +
+      '<div class="photo-info">' +
+        '<h4>' + esc(photo.title) + '</h4>' +
+        '<p>' + esc(photo.description || 'No description') + '</p>' +
+        '<p><span class="badge">' + esc(categoryNames[photo.category] || photo.category) + '</span>' +
+        (photo.slideshow !== false ? ' <span class="badge" style="background:rgba(47,107,79,.3)">Slideshow</span>' : '') + '</p>' +
+      '</div>' +
+      '<button class="btn btn-delete" onclick="deletePhoto(' + photo.id + ')">Delete</button>' +
+    '</div>';
+  }).join('');
 }
 
-// Delete photo
-function deletePhoto(id) {
-  if (confirm('Delete this photo from the gallery?')) {
-    photos = photos.filter(p => p.id !== id);
-    localStorage.setItem('galleryPhotos', JSON.stringify(photos));
-    renderPhotos();
-  }
+// ── Add ──
+document.getElementById('photoForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var url = document.getElementById('imageUrl').value.trim();
+  var titleVal = document.getElementById('title').value.trim();
+  if (!url || !titleVal) return;
+
+  var newPhoto = {
+    id: Date.now(),
+    title: titleVal,
+    description: document.getElementById('description').value.trim() || '',
+    imageUrl: url,
+    category: document.getElementById('category').value,
+    slideshow: document.getElementById('showInSlideshow').checked,
+    dateAdded: new Date().toISOString()
+  };
+
+  photos.unshift(newPhoto);
+  var ok = await savePhotos('Add photo: ' + titleVal);
+  if (!ok) { photos.shift(); return; }
+
+  var msg = document.getElementById('successMsg');
+  msg.textContent = '\u2713 Photo published! It\u2019s live on the website now.';
+  msg.style.display = 'block';
+  setTimeout(function() { msg.style.display = 'none'; }, 4000);
+  this.reset();
+  document.getElementById('showInSlideshow').checked = true;
+  renderPhotos();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ── Delete ──
+async function deletePhoto(id) {
+  if (!confirm('Delete this photo from the gallery?')) return;
+  var removed = photos.find(function(p) { return p.id === id; });
+  photos = photos.filter(function(p) { return p.id !== id; });
+  var ok = await savePhotos('Remove photo: ' + (removed ? removed.title : id));
+  if (!ok && removed) { photos.unshift(removed); }
+  renderPhotos();
 }
 </script>
-
 </body>
 </html>

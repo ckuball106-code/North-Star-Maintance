@@ -322,27 +322,20 @@ const categoryNames = {
 
 // Load photos
 function loadPhotos() {
-  allPhotos = JSON.parse(localStorage.getItem('galleryPhotos')) || [];
-  
-  if (allPhotos.length === 0) {
-    fetch('./gallery-data.json')
-      .then(r => r.json())
-      .then(data => {
-        allPhotos = data.photos || [];
-        renderGallery();
-      })
-      .catch(() => {
-        document.getElementById('galleryGrid').innerHTML = `
-          <div class="no-photos">
-            <h3>No photos yet</h3>
-            <p>Check back soon to see our completed projects!</p>
-            <a href="admin.html" class="btn primary" style="margin-top:20px;">Add Photos</a>
-          </div>
-        `;
-      });
-  } else {
-    renderGallery();
-  }
+  fetch('./gallery-data.json')
+    .then(r => r.json())
+    .then(data => {
+      allPhotos = data.photos || [];
+      renderGallery();
+    })
+    .catch(() => {
+      document.getElementById('galleryGrid').innerHTML = `
+        <div class="no-photos">
+          <h3>No photos yet</h3>
+          <p>Check back soon to see our completed projects!</p>
+        </div>
+      `;
+    });
 }
 
 // Check for category parameter in URL
@@ -387,8 +380,7 @@ function renderGallery() {
     grid.innerHTML = `
       <div class="no-photos" style="grid-column: 1/-1;">
         <h3>No photos in this category yet</h3>
-        <p>Check out other categories or add your first photo!</p>
-        <a href="admin.html" class="btn primary" style="margin-top:20px;">Add Photos</a>
+        <p>Check back soon for new project photos!</p>
       </div>
     `;
     return;

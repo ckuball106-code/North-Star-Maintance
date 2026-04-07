@@ -1443,37 +1443,28 @@ noteAdd.addEventListener('click', () => {
 renderCart();
 
 // =============================
-// Gallery Category Cards Loader
+// Gallery + Slideshow Loader
 // =============================
 function loadGalleryPhotos() {
   const galleryGrid = document.getElementById('galleryGrid');
-  if (!galleryGrid) return; // Not on home page
-  
-  // Try to load from localStorage first
-  let photos = JSON.parse(localStorage.getItem('galleryPhotos')) || [];
-  
-  // If no photos in localStorage, try loading from JSON file
-  if (photos.length === 0) {
-    fetch('./gallery-data.json')
-      .then(r => r.json())
-      .then(data => {
-        photos = data.photos || [];
-        renderGalleryCategoryCards(photos);
-      })
-      .catch(() => {
-        // Show placeholder if no photos
-        renderGalleryCategoryCards([]);
-      });
-  } else {
-    renderGalleryCategoryCards(photos);
-  }
+  const slideshowTrack = document.getElementById('slideshowTrack');
+
+  fetch('./gallery-data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const photos = data.photos || [];
+      if (galleryGrid) renderGalleryCategoryCards(photos);
+      if (slideshowTrack) initSlideshow(photos);
+    })
+    .catch(() => {
+      if (galleryGrid) renderGalleryCategoryCards([]);
+    });
 }
 
 function renderGalleryCategoryCards(photos) {
   const galleryGrid = document.getElementById('galleryGrid');
   if (!galleryGrid) return;
-  
-  // Define service categories with nice names and colors
+
   const categories = [
     { id: 'lawn-care', name: 'Lawn Care', gradient: 'linear-gradient(135deg, #2f6b4f 0%, #1a4d37 100%)' },
     { id: 'pressure-washing', name: 'Pressure Washing', gradient: 'linear-gradient(135deg, #4a7c9e 0%, #2d5a7b 100%)' },
@@ -1481,52 +1472,98 @@ function renderGalleryCategoryCards(photos) {
     { id: 'handyman', name: 'Handyman Services', gradient: 'linear-gradient(135deg, #b89e6a 0%, #987e4a 100%)' },
     { id: 'window-washing', name: 'Window Washing', gradient: 'linear-gradient(135deg, #6b9fb8 0%, #4b7f98 100%)' },
     { id: 'snow-removal', name: 'Snow Removal', gradient: 'linear-gradient(135deg, #9ea4b8 0%, #6e7488 100%)' },
-    { id: 'concrete-work', name: 'Concrete Work', gradient: 'linear-gradient(135deg, #858585 0%, #5a5a5a 100%)' }
+    { id: 'concrete', name: 'Concrete Work', gradient: 'linear-gradient(135deg, #858585 0%, #5a5a5a 100%)' },
+    { id: 'landscaping', name: 'Landscaping', gradient: 'linear-gradient(135deg, #5a8a4f 0%, #3a6a2f 100%)' }
   ];
-  
-  // Count photos in each category
+
   const categoryCounts = {};
-  photos.forEach(photo => {
-    categoryCounts[photo.category] = (categoryCounts[photo.category] || 0) + 1;
-  });
-  
-  // Get the first photo for each category as thumbnail
   const categoryThumbnails = {};
   photos.forEach(photo => {
-    if (!categoryThumbnails[photo.category]) {
-      categoryThumbnails[photo.category] = photo.imageUrl;
-    }
+    categoryCounts[photo.category] = (categoryCounts[photo.category] || 0) + 1;
+    if (!categoryThumbnails[photo.category]) categoryThumbnails[photo.category] = photo.imageUrl;
   });
-  
+
   if (photos.length === 0) {
-    galleryGrid.innerHTML = `
-      <div class="card gallery-item" style="grid-column: 1/-1; text-align:center; padding:40px;">
-        <p class="muted">No photos yet. <a href="admin.html">Add your first photo</a> to showcase your work!</p>
-      </div>
-    `;
+    galleryGrid.innerHTML = '<div class="card gallery-item" style="grid-column:1/-1; text-align:center; padding:40px;"><p class="muted">Photos coming soon!</p></div>';
     return;
   }
-  
-  // Render category cards (show all categories, even if no photos yet)
-  galleryGrid.innerHTML = categories.map(cat => {
+
+  galleryGrid.innerHTML = categories.filter(cat => categoryCounts[cat.id] > 0).map(cat => {
     const count = categoryCounts[cat.id] || 0;
     const thumbnail = categoryThumbnails[cat.id];
-    
     return `
       <a href="gallery.html?category=${cat.id}" class="card gallery-item" style="text-decoration:none; cursor:pointer;">
-        ${thumbnail 
-          ? `<img src="${escapeHtml(thumbnail)}" alt="${cat.name}" style="width:100%; height:200px; object-fit:cover; display:block;" onerror="this.outerHTML='<div class=\\'gallery-placeholder\\' style=\\'${cat.gradient}; height:200px; display:flex; align-items:center; justify-content:center;\\'><div class=\\'gallery-label\\'>${cat.name}</div></div>';">`
-          : `<div class="gallery-placeholder" style="${cat.gradient}">
-               <div class="gallery-label">${cat.name}</div>
-             </div>`
+        ${thumbnail
+          ? `<img src="${escapeHtml(thumbnail)}" alt="${escapeHtml(cat.name)}" style="width:100%;height:200px;object-fit:cover;display:block;" onerror="this.outerHTML='<div class=\\'gallery-placeholder\\' style=\\'${cat.gradient};height:200px;display:flex;align-items:center;justify-content:center;\\'><div class=\\'gallery-label\\'>${escapeHtml(cat.name)}</div></div>';">`
+          : `<div class="gallery-placeholder" style="${cat.gradient}"><div class="gallery-label">${escapeHtml(cat.name)}</div></div>`
         }
-        <p style="margin: 12px 16px; text-align: center; font-weight:700;">${cat.name}${count > 0 ? ` <span class="badge">${count} photo${count !== 1 ? 's' : ''}</span>` : ''}</p>
+        <p style="margin:12px 16px;text-align:center;font-weight:700;">${escapeHtml(cat.name)} <span class="badge">${count}</span></p>
       </a>
     `;
   }).join('');
 }
 
-// Load gallery on page load
+// ── Slideshow ──
+let slideIndex = 0;
+let slideTimer = null;
+
+function initSlideshow(photos) {
+  const slideshowSection = document.getElementById('slideshow-section');
+  const track = document.getElementById('slideshowTrack');
+  const dotsContainer = document.getElementById('slideDots');
+  if (!slideshowSection || !track) return;
+
+  // Only show photos marked for slideshow (or all if none explicitly set)
+  let slides = photos.filter(p => p.slideshow !== false && p.imageUrl);
+  if (slides.length === 0) return;
+
+  slideshowSection.style.display = 'block';
+
+  track.innerHTML = slides.map((photo, i) => `
+    <div class="slideshow-slide${i === 0 ? ' active' : ''}">
+      <img src="${escapeHtml(photo.imageUrl)}" alt="${escapeHtml(photo.title)}" loading="${i < 2 ? 'eager' : 'lazy'}">
+      <div class="slide-caption">
+        ${escapeHtml(photo.title)}
+        ${photo.description ? '<div class="slide-desc">' + escapeHtml(photo.description) + '</div>' : ''}
+      </div>
+    </div>
+  `).join('');
+
+  if (dotsContainer && slides.length > 1) {
+    dotsContainer.innerHTML = slides.map((_, i) =>
+      `<button class="slideshow-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Slide ${i + 1}"></button>`
+    ).join('');
+    dotsContainer.addEventListener('click', e => {
+      const dot = e.target.closest('.slideshow-dot');
+      if (!dot) return;
+      goToSlide(Number(dot.dataset.index), slides.length);
+    });
+  }
+
+  const prevBtn = document.getElementById('slidePrev');
+  const nextBtn = document.getElementById('slideNext');
+  if (prevBtn) prevBtn.addEventListener('click', () => { goToSlide((slideIndex - 1 + slides.length) % slides.length, slides.length); });
+  if (nextBtn) nextBtn.addEventListener('click', () => { goToSlide((slideIndex + 1) % slides.length, slides.length); });
+
+  if (slides.length > 1) {
+    slideTimer = setInterval(() => { goToSlide((slideIndex + 1) % slides.length, slides.length); }, 5000);
+  }
+}
+
+function goToSlide(index, total) {
+  const allSlides = document.querySelectorAll('.slideshow-slide');
+  const allDots = document.querySelectorAll('.slideshow-dot');
+  if (index < 0 || index >= total) return;
+  allSlides.forEach(s => s.classList.remove('active'));
+  allDots.forEach(d => d.classList.remove('active'));
+  if (allSlides[index]) allSlides[index].classList.add('active');
+  if (allDots[index]) allDots[index].classList.add('active');
+  slideIndex = index;
+  // Reset auto-advance timer
+  if (slideTimer) clearInterval(slideTimer);
+  if (total > 1) slideTimer = setInterval(() => { goToSlide((slideIndex + 1) % total, total); }, 5000);
+}
+
 loadGalleryPhotos();
 
 // =============================
