@@ -156,6 +156,12 @@ if(parts.size() >= 3 && parts.get(2) != "")
 rate = parts.get(2).toDecimal();
 }
 lineItem.put("rate",rate);
+desc = "";
+if(parts.size() >= 4 && parts.get(3) != null && parts.get(3) != "")
+{
+desc = parts.get(3);
+lineItem.put("description",desc);
+}
 lineItems.add(lineItem);
 }
 }

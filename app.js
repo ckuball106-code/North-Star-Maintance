@@ -286,11 +286,14 @@ function ensureCategory(category){
 let _cartScrollY = 0;
 function openCart(){ 
   cartDrawer.classList.add('open');
-  _cartScrollY = window.scrollY;
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${_cartScrollY}px`;
-  document.body.style.width = '100%';
-  document.body.style.overflow = 'hidden';
+  // Only lock body scroll on mobile (cart covers full screen)
+  if (window.innerWidth <= 720) {
+    _cartScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${_cartScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
 }
 function closeCart(){ 
   cartDrawer.classList.remove('open');
@@ -298,7 +301,9 @@ function closeCart(){
   document.body.style.top = '';
   document.body.style.width = '';
   document.body.style.overflow = '';
-  window.scrollTo(0, _cartScrollY);
+  if (window.innerWidth <= 720) {
+    window.scrollTo(0, _cartScrollY);
+  }
 }
 
 function getItemUnitPrice(item){
@@ -1394,9 +1399,11 @@ function buildZapierPayload(total, cartText){
     }, {}),
     estimated_total: total,
     // Build pipe-separated line items for Zoho Flow from ALL items (up to 50)
-    line_items_data: lineItems.map(item =>
-      `[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`
-    ).join(';;'),
+    // Format: name|qty|price|note  (note is optional 4th field)
+    line_items_data: lineItems.map(item => {
+      const note = (item.item_note || '').replace(/\|/g, '-').replace(/;;/g, ', ');
+      return `[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}|${note}`;
+    }).join(';;'),
     submitted_at: new Date().toISOString(),
     source: 'north-star-site'
   };
