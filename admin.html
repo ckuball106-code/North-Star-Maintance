@@ -8,7 +8,7 @@
   <style>
     #loginGate { max-width:400px; margin:120px auto; padding:30px; text-align:center; }
     #loginGate input { width:100%; padding:16px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-size:18px; margin:16px 0; text-align:center; }
-    #loginError { color:#ff3b30; font-size:13px; display:none; margin-bottom:10px; }
+    #loginError { color:#ff3b30; font-size:14px; display:none; margin-bottom:10px; }
     .admin-container { max-width:800px; margin:40px auto; padding:16px; display:none; }
     .admin-header { text-align:center; margin-bottom:24px; }
     .photo-form { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:30px; }
@@ -17,25 +17,18 @@
     .form-row input, .form-row textarea, .form-row select { width:100%; padding:14px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-family:inherit; font-size:16px; box-sizing:border-box; }
     .form-row select option { background:#1a2420; color:#f3f0e6; }
     .form-row textarea { min-height:70px; resize:vertical; }
-
-    /* File picker area */
     .photo-picker { border:2px dashed var(--line); border-radius:12px; padding:30px 20px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; position:relative; }
     .photo-picker:active, .photo-picker.dragover { border-color:var(--brand); background:rgba(47,107,79,.08); }
     .photo-picker input[type="file"] { position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
     .picker-icon { font-size:48px; margin-bottom:8px; }
     .picker-text { font-size:16px; font-weight:600; color:var(--brand2); }
     .picker-sub { font-size:13px; color:var(--muted); margin-top:4px; }
-
-    /* Preview */
     .photo-preview { display:none; margin-top:12px; text-align:center; }
     .photo-preview img { max-width:100%; max-height:300px; border-radius:10px; border:1px solid var(--line); }
-    .photo-preview .change-btn { display:inline-block; margin-top:8px; font-size:14px; color:var(--brand2); cursor:pointer; text-decoration:underline; }
-
-    /* URL toggle */
+    .photo-preview .change-btn { display:inline-block; margin-top:10px; font-size:15px; color:var(--brand2); cursor:pointer; text-decoration:underline; }
     .url-toggle { text-align:center; margin:12px 0; }
     .url-toggle a { font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline; }
     .url-section { display:none; }
-
     .photo-list { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
     .photo-item { display:flex; gap:14px; padding:14px; border:1px solid var(--line); border-radius:8px; margin-bottom:12px; align-items:center; }
     .photo-item img { width:90px; height:90px; object-fit:cover; border-radius:8px; flex-shrink:0; }
@@ -47,7 +40,6 @@
     .success-msg { background:rgba(47,107,79,.2); border:1px solid var(--brand); color:var(--brand2); padding:14px 16px; border-radius:8px; margin-bottom:20px; text-align:center; font-size:15px; }
     .saving-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999; }
     .saving-overlay .msg { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:30px 40px; text-align:center; font-size:16px; }
-
     @media(max-width:600px) {
       .admin-container { padding:10px; margin-top:20px; }
       .photo-form { padding:16px; }
@@ -78,31 +70,7 @@
   <button class="btn primary" style="width:100%;padding:16px;font-size:16px" onclick="checkPassword()">Log In</button>
 </div>
 
-<!-- Token Setup Screen (shown once per device) -->
-<div class="admin-container" id="tokenSetup" style="display:none;">
-  <div style="background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; max-width:600px; margin:0 auto;">
-    <h2 style="margin-bottom:8px; text-align:center;">One-Time Setup</h2>
-    <p class="muted" style="text-align:center; margin-bottom:20px;">You need a GitHub token so photos can be saved to your website. This only needs to be done once on this device.</p>
-
-    <div style="background:rgba(201,154,74,.1); border:1px solid rgba(201,154,74,.3); border-radius:8px; padding:16px; margin-bottom:20px;">
-      <h3 style="margin:0 0 12px; color:var(--brand2); font-size:15px;">How to get your token:</h3>
-      <ol style="margin:0; padding-left:20px;">
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:var(--brand2); font-weight:600;">github.com/settings/tokens</a></li>
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Tap <strong>"Generate new token"</strong></li>
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Name it <strong>Gallery Admin</strong></li>
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Under Repository access → <strong>Only select repositories</strong> → pick <strong>North-Star-Maintance</strong></li>
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Under Permissions → Contents → set to <strong>Read and write</strong></li>
-        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Tap <strong>Generate token</strong>, then copy and paste it below</li>
-      </ol>
-    </div>
-
-    <div id="tokenError" style="color:#ff3b30; font-size:14px; display:none; margin-bottom:12px; text-align:center;"></div>
-    <input type="text" id="tokenInput" placeholder="Paste your token here (starts with github_pat_)" style="width:100%; padding:16px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-size:15px; box-sizing:border-box; margin-bottom:12px;">
-    <button class="btn primary" style="width:100%; padding:16px; font-size:16px;" onclick="saveToken()">Save Token &amp; Continue</button>
-  </div>
-</div>
-
-<!-- Admin Panel (hidden until authenticated) -->
+<!-- Admin Panel -->
 <div class="admin-container" id="adminPanel">
   <div class="admin-header">
     <h1>Gallery Manager</h1>
@@ -114,8 +82,6 @@
   <div class="photo-form">
     <h2 style="margin-bottom:16px">Add New Photo</h2>
     <form id="photoForm">
-
-      <!-- Photo picker -->
       <div class="form-row">
         <label>Photo *</label>
         <div class="photo-picker" id="photoPicker">
@@ -132,7 +98,6 @@
         </div>
       </div>
 
-      <!-- Or paste URL -->
       <div class="url-toggle" id="urlToggle"><a id="urlToggleLink">Or paste an image URL instead</a></div>
       <div class="url-section" id="urlSection">
         <div class="form-row">
@@ -181,10 +146,6 @@
     </div>
     <div id="photosList"></div>
   </div>
-
-  <div style="text-align:center; margin-top:30px; padding-top:20px; border-top:1px solid var(--line);">
-    <a id="resetTokenBtn" style="font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline;">Reset GitHub Token</a>
-  </div>
 </div>
 
 <!-- Saving Overlay -->
@@ -198,171 +159,69 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 
 // ── Config ──
-var ADMIN_PASSWORD = 'kUBALL1';
-var REPO_OWNER = 'ckuball106-code';
-var REPO_NAME = 'North-Star-Maintance';
-var GALLERY_FILE = 'gallery-data.json';
-var PHOTOS_DIR = 'photos';
-var BRANCH = 'main';
-var SITE_BASE = 'https://ckuball106-code.github.io/North-Star-Maintance/';
+var WORKER_URL = 'https://spring-credit-c30a.ckuball106.workers.dev';
 var MAX_WIDTH = 1400;
 var JPEG_QUALITY = 0.82;
 
+var adminPassword = '';
 var photos = [];
-var gallerySha = null;
-var pendingImageBase64 = null; // raw base64 (no data URI prefix)
-var pendingImageName = null;
+var pendingImageBase64 = null;
 
 // ── Password Gate ──
 document.getElementById('passwordInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
 
 function checkPassword() {
-  if (document.getElementById('passwordInput').value === ADMIN_PASSWORD) {
-    document.getElementById('loginGate').style.display = 'none';
-    // Check if we have a token — if not, show setup screen
-    if (localStorage.getItem('gh_gallery_token')) {
-      document.getElementById('adminPanel').style.display = 'block';
-      loadPhotos();
-    } else {
-      document.getElementById('tokenSetup').style.display = 'block';
-    }
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('passwordInput').focus();
-  }
+  var pw = document.getElementById('passwordInput').value;
+  if (!pw) return;
+  // Save password for API calls, then try loading photos to verify
+  adminPassword = pw;
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  loadPhotos();
 }
 
-// ── Token setup screen ──
-async function saveToken() {
-  var token = document.getElementById('tokenInput').value.trim();
-  var errEl = document.getElementById('tokenError');
-  if (!token) { errEl.textContent = 'Please paste your token above.'; errEl.style.display = 'block'; return; }
-  errEl.style.display = 'none';
-  showSaving('Verifying token…');
+// ── Worker API ──
+async function workerPost(endpoint, data) {
+  data.password = adminPassword;
+  var resp = await fetch(WORKER_URL + endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  var result = await resp.json();
+  if (!resp.ok) {
+    if (resp.status === 403) {
+      // Wrong password — kick back to login
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('loginGate').style.display = 'block';
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+      adminPassword = '';
+      throw new Error('wrong_password');
+    }
+    throw new Error(result.error || 'Server error');
+  }
+  return result;
+}
+
+// ── Load photos ──
+async function loadPhotos() {
+  showSaving('Loading photos…');
   try {
-    // Test token by checking repo permissions (requires auth, tests push access)
-    var resp = await fetch('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME, {
-      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    hideSaving();
-    if (resp.ok) {
-      var repo = await resp.json();
-      // Check if token has push (write) permission
-      if (repo.permissions && repo.permissions.push) {
-        localStorage.setItem('gh_gallery_token', token);
-        document.getElementById('tokenSetup').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'block';
-        loadPhotos();
-      } else {
-        errEl.innerHTML = '<strong>Token works but doesn\u2019t have write permission.</strong><br>Go back to your token settings on GitHub and make sure <strong>Contents</strong> is set to <strong>Read and write</strong> (not just Read).';
-        errEl.style.display = 'block';
-      }
-    } else if (resp.status === 401) {
-      errEl.innerHTML = '<strong>Token not recognized.</strong><br>Make sure you copied the entire token (it\u2019s long and starts with <code>github_pat_</code>).';
-      errEl.style.display = 'block';
-    } else if (resp.status === 403) {
-      errEl.innerHTML = '<strong>Token doesn\u2019t have access to this repo.</strong><br>When creating the token, under Repository access, choose <strong>Only select repositories</strong> and pick <strong>North-Star-Maintance</strong>.';
-      errEl.style.display = 'block';
-    } else {
-      errEl.textContent = 'Something went wrong (status ' + resp.status + '). Try again.';
-      errEl.style.display = 'block';
-    }
-  } catch(e) {
-    hideSaving();
-    errEl.textContent = 'Network error. Check your connection and try again.';
-    errEl.style.display = 'block';
+    var result = await workerPost('/gallery/photos', {});
+    photos = result.photos || [];
+  } catch (e) {
+    if (e.message === 'wrong_password') { hideSaving(); return; }
+    // Fallback: try reading the JSON file directly
+    try {
+      var resp = await fetch('./gallery-data.json?t=' + Date.now());
+      var data = await resp.json();
+      photos = data.photos || [];
+    } catch(e2) { photos = []; }
   }
-}
-
-// ── GitHub Token ──
-function getToken() {
-  var token = localStorage.getItem('gh_gallery_token');
-  if (!token) {
-    // Token missing — bounce back to setup screen
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('tokenSetup').style.display = 'block';
-    return null;
-  }
-  return token.trim();
-}
-
-// ── GitHub API helpers ──
-function ghHeaders(write) {
-  var h = { 'Accept': 'application/vnd.github.v3+json' };
-  if (write) {
-    var t = getToken();
-    if (!t) return null;
-    h['Authorization'] = 'Bearer ' + t;
-    h['Content-Type'] = 'application/json';
-  }
-  return h;
-}
-
-function ghUrl(path) {
-  return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + path;
-}
-
-// Read gallery-data.json
-async function loadGalleryFile() {
-  var resp = await fetch(ghUrl(GALLERY_FILE) + '?ref=' + BRANCH, { headers: ghHeaders(false) });
-  if (!resp.ok) return null;
-  var data = await resp.json();
-  gallerySha = data.sha;
-  var decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-  return JSON.parse(decoded);
-}
-
-// Write gallery-data.json
-async function saveGalleryFile(data, message) {
-  var headers = ghHeaders(true);
-  if (!headers) { alert('GitHub token is required to save.'); return false; }
-  var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-  var body = { message: message, content: content, sha: gallerySha, branch: BRANCH };
-  var resp = await fetch(ghUrl(GALLERY_FILE), { method: 'PUT', headers: headers, body: JSON.stringify(body) });
-  if (resp.ok) {
-    var result = await resp.json();
-    gallerySha = result.content.sha;
-    return true;
-  }
-  if (resp.status === 401 || resp.status === 403) {
-    localStorage.removeItem('gh_gallery_token');
-    alert('Token error — your GitHub token may need to be re-created. Tap \"Reset GitHub Token\" at the bottom to enter a new one.');
-    return false;
-  }
-  var err = {}; try { err = await resp.json(); } catch(e) {}
-  alert('Error saving: ' + (err.message || resp.statusText));
-  return false;
-}
-
-// Upload an image file to the repo
-async function uploadImageFile(base64Content, filename) {
-  var headers = ghHeaders(true);
-  if (!headers) { alert('GitHub token is required.'); return null; }
-  var path = PHOTOS_DIR + '/' + filename;
-  // Check if file already exists (get its sha)
-  var sha = undefined;
-  try {
-    var check = await fetch(ghUrl(path) + '?ref=' + BRANCH, { headers: ghHeaders(false) });
-    if (check.ok) {
-      var existing = await check.json();
-      sha = existing.sha;
-    }
-  } catch(e) {}
-  var body = { message: 'Add photo: ' + filename, content: base64Content, branch: BRANCH };
-  if (sha) body.sha = sha;
-  var resp = await fetch(ghUrl(path), { method: 'PUT', headers: headers, body: JSON.stringify(body) });
-  if (resp.ok) {
-    return SITE_BASE + path;
-  }
-  if (resp.status === 401 || resp.status === 403) {
-    localStorage.removeItem('gh_gallery_token');
-    alert('Token error — your GitHub token may need to be re-created. Tap \"Reset GitHub Token\" at the bottom to enter a new one.');
-    return null;
-  }
-  var err = {}; try { err = await resp.json(); } catch(e) {}
-  alert('Error uploading image: ' + (err.message || resp.statusText));
-  return null;
+  hideSaving();
+  renderPhotos();
 }
 
 // ── Image compression ──
@@ -376,12 +235,9 @@ function compressImage(file) {
         if (w > MAX_WIDTH) { h = Math.round(h * (MAX_WIDTH / w)); w = MAX_WIDTH; }
         var canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        // Get base64 without the data URI prefix
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         var dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-        var base64 = dataUrl.split(',')[1];
-        resolve({ base64: base64, dataUrl: dataUrl });
+        resolve({ base64: dataUrl.split(',')[1], dataUrl: dataUrl });
       };
       img.onerror = reject;
       img.src = e.target.result;
@@ -391,7 +247,7 @@ function compressImage(file) {
   });
 }
 
-// ── File picker UI ──
+// ── File picker ──
 var fileInput = document.getElementById('fileInput');
 var photoPreview = document.getElementById('photoPreview');
 var previewImg = document.getElementById('previewImg');
@@ -405,11 +261,9 @@ fileInput.addEventListener('change', async function() {
   try {
     var result = await compressImage(file);
     pendingImageBase64 = result.base64;
-    pendingImageName = Date.now() + '.jpg';
     previewImg.src = result.dataUrl;
     photoPreview.style.display = 'block';
     pickerDiv.style.display = 'none';
-    // Clear URL field if any
     document.getElementById('imageUrl').value = '';
   } catch(err) {
     alert('Could not read that image. Try another photo.');
@@ -424,7 +278,6 @@ document.getElementById('changePhotoBtn').addEventListener('click', function() {
 
 function resetPicker() {
   pendingImageBase64 = null;
-  pendingImageName = null;
   fileInput.value = '';
   photoPreview.style.display = 'none';
   pickerDiv.style.display = 'block';
@@ -440,24 +293,7 @@ document.getElementById('urlToggleLink').addEventListener('click', function() {
   sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
 });
 
-// ── Load photos ──
-async function loadPhotos() {
-  showSaving('Loading photos…');
-  try {
-    var data = await loadGalleryFile();
-    photos = (data && data.photos) ? data.photos : [];
-  } catch (e) {
-    try {
-      var resp = await fetch('./gallery-data.json?t=' + Date.now());
-      var data2 = await resp.json();
-      photos = data2.photos || [];
-    } catch (e2) { photos = []; }
-  }
-  hideSaving();
-  renderPhotos();
-}
-
-// ── UI ──
+// ── UI helpers ──
 function showSaving(msg) { document.getElementById('savingMsg').textContent = msg || 'Saving…'; document.getElementById('savingOverlay').style.display = 'flex'; }
 function hideSaving() { document.getElementById('savingOverlay').style.display = 'none'; }
 function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -497,78 +333,54 @@ document.getElementById('photoForm').addEventListener('submit', async function(e
   if (!titleVal) return;
 
   var urlVal = document.getElementById('imageUrl').value.trim();
-  var hasFile = pendingImageBase64 && pendingImageName;
-  if (!hasFile && !urlVal) { alert('Please choose a photo or paste an image URL.'); return; }
+  if (!pendingImageBase64 && !urlVal) { alert('Pick a photo or paste an image URL.'); return; }
 
-  var finalUrl;
+  showSaving('Uploading photo…');
+  try {
+    var payload = {
+      title: titleVal,
+      description: document.getElementById('description').value.trim() || '',
+      category: document.getElementById('category').value,
+      slideshow: document.getElementById('showInSlideshow').checked
+    };
+    if (pendingImageBase64) {
+      payload.image = pendingImageBase64;
+    } else {
+      payload.imageUrl = urlVal;
+    }
 
-  if (hasFile) {
-    // Upload image file to repo
-    showSaving('Uploading photo…');
-    finalUrl = await uploadImageFile(pendingImageBase64, pendingImageName);
-    hideSaving();
-    if (!finalUrl) return;
-  } else {
-    finalUrl = urlVal;
+    var result = await workerPost('/gallery/add', payload);
+    if (result.photo) photos.unshift(result.photo);
+
+    var msg = document.getElementById('successMsg');
+    msg.textContent = '\u2713 Photo published! It\u2019s live on your website now.';
+    msg.style.display = 'block';
+    setTimeout(function() { msg.style.display = 'none'; }, 5000);
+    this.reset();
+    document.getElementById('showInSlideshow').checked = true;
+    resetPicker();
+    document.getElementById('urlSection').style.display = 'none';
+    renderPhotos();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(err) {
+    if (err.message !== 'wrong_password') alert('Error: ' + err.message);
   }
-
-  var newPhoto = {
-    id: Date.now(),
-    title: titleVal,
-    description: document.getElementById('description').value.trim() || '',
-    imageUrl: finalUrl,
-    category: document.getElementById('category').value,
-    slideshow: document.getElementById('showInSlideshow').checked,
-    dateAdded: new Date().toISOString()
-  };
-
-  photos.unshift(newPhoto);
-  showSaving('Publishing to gallery…');
-
-  // If we uploaded an image file, the repo changed — re-read gallery SHA
-  if (hasFile) {
-    try {
-      var freshData = await loadGalleryFile();
-      var existing = (freshData && freshData.photos) ? freshData.photos : [];
-      photos = [newPhoto].concat(existing);
-    } catch(e) {}
-  }
-
-  var ok = await saveGalleryFile({ photos: photos }, 'Add photo: ' + titleVal);
   hideSaving();
-  if (!ok) { photos = photos.filter(function(p) { return p.id !== newPhoto.id; }); return; }
-
-  var msg = document.getElementById('successMsg');
-  msg.textContent = '\u2713 Photo published! It\u2019s live on your website now.';
-  msg.style.display = 'block';
-  setTimeout(function() { msg.style.display = 'none'; }, 5000);
-  this.reset();
-  document.getElementById('showInSlideshow').checked = true;
-  resetPicker();
-  document.getElementById('urlSection').style.display = 'none';
-  renderPhotos();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// ── Delete ──
+// ── Delete photo ──
 async function deletePhoto(id) {
   if (!confirm('Delete this photo from the gallery?')) return;
-  var removed = photos.find(function(p) { return p.id === id; });
-  photos = photos.filter(function(p) { return p.id !== id; });
-  var ok = await saveGalleryFile({ photos: photos }, 'Remove photo: ' + (removed ? removed.title : id));
-  if (!ok && removed) { photos.unshift(removed); }
-  renderPhotos();
+  showSaving('Deleting…');
+  try {
+    await workerPost('/gallery/delete', { photoId: id });
+    photos = photos.filter(function(p) { return p.id !== id; });
+    renderPhotos();
+  } catch(err) {
+    if (err.message !== 'wrong_password') alert('Error: ' + err.message);
+  }
+  hideSaving();
 }
-
-// ── Reset token ──
-document.getElementById('resetTokenBtn').addEventListener('click', function() {
-  if (!confirm('Reset your GitHub token? You will need to create a new one.')) return;
-  localStorage.removeItem('gh_gallery_token');
-  document.getElementById('adminPanel').style.display = 'none';
-  document.getElementById('tokenInput').value = '';
-  document.getElementById('tokenError').style.display = 'none';
-  document.getElementById('tokenSetup').style.display = 'block';
-});
 </script>
 </body>
 </html>
