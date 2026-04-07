@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>Gallery Admin - North Star Maintenance</title>
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./styles.css">
   <style>
     #loginGate { max-width:400px; margin:120px auto; padding:30px; text-align:center; }
@@ -86,7 +86,7 @@
       <div class="form-row">
         <label>Photo *</label>
         <div class="photo-picker" id="photoPicker">
-          <input type="file" accept="image/*" id="fileInput">
+          <input type="file" accept="image/*,.heic,.heif" id="fileInput" capture="environment">
           <div id="pickerContent">
             <div class="picker-icon">📷</div>
             <div class="picker-text">Tap to Take Photo or Choose from Library</div>
@@ -258,17 +258,41 @@ var pickerContent = document.getElementById('pickerContent');
 fileInput.addEventListener('change', async function() {
   var file = fileInput.files[0];
   if (!file) return;
+  
   pickerContent.innerHTML = '<div class="picker-text">Processing…</div>';
+  
   try {
-    // Convert HEIC/HEIF to JPG if needed
-    if (file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif')) {
-      try {
-        pickerContent.innerHTML = '<div class="picker-text">Converting iPhone photo…</div>';
-        var convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
-        file = new File([convertedBlob], file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), { type: 'image/jpeg' });
-      } catch(convErr) {
-        console.error('HEIC conversion error:', convErr);
-        throw new Error('Could not convert iPhone photo. Try taking a screenshot instead.');
+    // Check if heic2any is available and if file needs conversion
+    var needsConversion = file.type === 'image/heic' || file.type === 'image/heif' || 
+                          file.name.toLowerCase().endsWith('.heic') || 
+                          file.name.toLowerCase().endsWith('.heif');
+    
+    if (needsConversion) {
+      if (typeof heic2any === 'undefined') {
+        // Library not loaded, try to process anyway
+        console.warn('heic2any not available, attempting to read file directly');
+      } else {
+        try {
+          pickerContent.innerHTML = '<div class="picker-text">Converting iPhone photo…</div>';
+          var convertedBlob = await heic2any({ 
+            blob: file, 
+            toType: 'image/jpeg', 
+            quality: 0.85 
+          });
+          // Handle both single blob and array of blobs
+          if (Array.isArray(convertedBlob)) {
+            convertedBlob = convertedBlob[0];
+          }
+          file = new File([convertedBlob], 
+            file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), 
+            { type: 'image/jpeg' }
+          );
+        } catch(convErr) {
+          console.error('HEIC conversion failed:', convErr);
+          alert('iPhone photo format not supported by this browser. Please:\n\n1. Take a screenshot instead, or\n2. Go to Settings > Camera > Formats and switch to "Most Compatible"');
+          resetPicker();
+          return;
+        }
       }
     }
     
@@ -280,7 +304,12 @@ fileInput.addEventListener('change', async function() {
     pickerDiv.style.display = 'none';
     document.getElementById('imageUrl').value = '';
   } catch(err) {
-    alert(err.message || 'Could not read that image. Try another photo.');
+    console.error('File processing error:', err);
+    var errorMsg = err.message || 'Could not process that image.';
+    if (errorMsg.includes('load failed') || errorMsg.includes('Failed to fetch')) {
+      errorMsg = 'Could not load the image. Try:\n• Taking a screenshot instead\n• Using a different photo\n• Checking your internet connection';
+    }
+    alert(errorMsg);
     resetPicker();
   }
 });
