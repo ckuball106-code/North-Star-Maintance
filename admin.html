@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>Gallery Admin - North Star Maintenance</title>
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <style>
     #loginGate { max-width:400px; margin:120px auto; padding:30px; text-align:center; }
@@ -257,8 +258,21 @@ var pickerContent = document.getElementById('pickerContent');
 fileInput.addEventListener('change', async function() {
   var file = fileInput.files[0];
   if (!file) return;
-  pickerContent.innerHTML = '<div class="picker-text">Compressing…</div>';
+  pickerContent.innerHTML = '<div class="picker-text">Processing…</div>';
   try {
+    // Convert HEIC/HEIF to JPG if needed
+    if (file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif')) {
+      try {
+        pickerContent.innerHTML = '<div class="picker-text">Converting iPhone photo…</div>';
+        var convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+        file = new File([convertedBlob], file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), { type: 'image/jpeg' });
+      } catch(convErr) {
+        console.error('HEIC conversion error:', convErr);
+        throw new Error('Could not convert iPhone photo. Try taking a screenshot instead.');
+      }
+    }
+    
+    pickerContent.innerHTML = '<div class="picker-text">Compressing…</div>';
     var result = await compressImage(file);
     pendingImageBase64 = result.base64;
     previewImg.src = result.dataUrl;
@@ -266,7 +280,7 @@ fileInput.addEventListener('change', async function() {
     pickerDiv.style.display = 'none';
     document.getElementById('imageUrl').value = '';
   } catch(err) {
-    alert('Could not read that image. Try another photo.');
+    alert(err.message || 'Could not read that image. Try another photo.');
     resetPicker();
   }
 });
