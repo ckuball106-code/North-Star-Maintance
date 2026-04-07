@@ -181,6 +181,10 @@
     </div>
     <div id="photosList"></div>
   </div>
+
+  <div style="text-align:center; margin-top:30px; padding-top:20px; border-top:1px solid var(--line);">
+    <a id="resetTokenBtn" style="font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline;">Reset GitHub Token</a>
+  </div>
 </div>
 
 <!-- Saving Overlay -->
@@ -234,21 +238,31 @@ async function saveToken() {
   var token = document.getElementById('tokenInput').value.trim();
   var errEl = document.getElementById('tokenError');
   if (!token) { errEl.textContent = 'Please paste your token above.'; errEl.style.display = 'block'; return; }
-  // Verify token works
   errEl.style.display = 'none';
   showSaving('Verifying token…');
   try {
-    var resp = await fetch(ghUrl(GALLERY_FILE) + '?ref=' + BRANCH, {
+    // Test token by checking repo permissions (requires auth, tests push access)
+    var resp = await fetch('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME, {
       headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
     });
     hideSaving();
     if (resp.ok) {
-      localStorage.setItem('gh_gallery_token', token);
-      document.getElementById('tokenSetup').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'block';
-      loadPhotos();
-    } else if (resp.status === 401 || resp.status === 403) {
-      errEl.textContent = 'That token didn\u2019t work. Make sure you copied the whole thing and that Contents is set to Read and write.';
+      var repo = await resp.json();
+      // Check if token has push (write) permission
+      if (repo.permissions && repo.permissions.push) {
+        localStorage.setItem('gh_gallery_token', token);
+        document.getElementById('tokenSetup').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        loadPhotos();
+      } else {
+        errEl.innerHTML = '<strong>Token works but doesn\u2019t have write permission.</strong><br>Go back to your token settings on GitHub and make sure <strong>Contents</strong> is set to <strong>Read and write</strong> (not just Read).';
+        errEl.style.display = 'block';
+      }
+    } else if (resp.status === 401) {
+      errEl.innerHTML = '<strong>Token not recognized.</strong><br>Make sure you copied the entire token (it\u2019s long and starts with <code>github_pat_</code>).';
+      errEl.style.display = 'block';
+    } else if (resp.status === 403) {
+      errEl.innerHTML = '<strong>Token doesn\u2019t have access to this repo.</strong><br>When creating the token, under Repository access, choose <strong>Only select repositories</strong> and pick <strong>North-Star-Maintance</strong>.';
       errEl.style.display = 'block';
     } else {
       errEl.textContent = 'Something went wrong (status ' + resp.status + '). Try again.';
@@ -313,7 +327,7 @@ async function saveGalleryFile(data, message) {
   }
   if (resp.status === 401 || resp.status === 403) {
     localStorage.removeItem('gh_gallery_token');
-    alert('GitHub token expired or invalid. It has been cleared — please try again.');
+    alert('Token error — your GitHub token may need to be re-created. Tap \"Reset GitHub Token\" at the bottom to enter a new one.');
     return false;
   }
   var err = {}; try { err = await resp.json(); } catch(e) {}
@@ -343,7 +357,7 @@ async function uploadImageFile(base64Content, filename) {
   }
   if (resp.status === 401 || resp.status === 403) {
     localStorage.removeItem('gh_gallery_token');
-    alert('GitHub token expired or invalid. Cleared — please try again.');
+    alert('Token error — your GitHub token may need to be re-created. Tap \"Reset GitHub Token\" at the bottom to enter a new one.');
     return null;
   }
   var err = {}; try { err = await resp.json(); } catch(e) {}
@@ -545,6 +559,16 @@ async function deletePhoto(id) {
   if (!ok && removed) { photos.unshift(removed); }
   renderPhotos();
 }
+
+// ── Reset token ──
+document.getElementById('resetTokenBtn').addEventListener('click', function() {
+  if (!confirm('Reset your GitHub token? You will need to create a new one.')) return;
+  localStorage.removeItem('gh_gallery_token');
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('tokenInput').value = '';
+  document.getElementById('tokenError').style.display = 'none';
+  document.getElementById('tokenSetup').style.display = 'block';
+});
 </script>
 </body>
 </html>
