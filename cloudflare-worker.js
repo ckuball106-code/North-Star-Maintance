@@ -93,11 +93,26 @@ function ghHeaders(token) {
   };
 }
 
-async function readFile(token, filePath) {
+// Read a file from the public repo (no auth needed)
+async function readFilePublic(filePath) {
+  const resp = await fetch(`${ghUrl(filePath)}?ref=${BRANCH}`, {
+    headers: { 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'NorthStar-Worker' },
+  });
+  if (!resp.ok) return null;
+  const data = await resp.json();
+  const decoded = atob(data.content.replace(/\n/g, ''));
+  return { content: JSON.parse(decoded), sha: data.sha };
+}
+
+// Read a file with auth (needed before writing to get latest sha)
+async function readFileAuth(token, filePath) {
   const resp = await fetch(`${ghUrl(filePath)}?ref=${BRANCH}`, {
     headers: ghHeaders(token),
   });
-  if (!resp.ok) return null;
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub read failed (${resp.status})`);
+  }
   const data = await resp.json();
   const decoded = atob(data.content.replace(/\n/g, ''));
   return { content: JSON.parse(decoded), sha: data.sha };
@@ -114,6 +129,8 @@ async function writeFile(token, filePath, content, sha, message) {
   });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
+    if (resp.status === 401) throw new Error('GITHUB_TOKEN is invalid — check the secret in Cloudflare Worker settings');
+    if (resp.status === 403) throw new Error('GITHUB_TOKEN does not have write permission — make sure Contents is set to Read and write');
     throw new Error(err.message || `GitHub write failed (${resp.status})`);
   }
   const result = await resp.json();
@@ -123,7 +140,8 @@ async function writeFile(token, filePath, content, sha, message) {
 // ── Gallery endpoints ──
 
 async function getPhotos(env) {
-  const file = await readFile(env.GITHUB_TOKEN, GALLERY_FILE);
+  // Public repo — no auth needed to read
+  const file = await readFilePublic(GALLERY_FILE);
   const photos = file ? (file.content.photos || []) : [];
   return json({ ok: true, photos });
 }
@@ -132,6 +150,7 @@ async function addPhoto(env, body) {
   const { image, imageUrl, title, description, category, slideshow } = body;
   if (!title) return json({ error: 'Title is required' }, 400);
   if (!image && !imageUrl) return json({ error: 'Image or URL is required' }, 400);
+  if (!env.GITHUB_TOKEN) return json({ error: 'GITHUB_TOKEN secret is not set in Cloudflare Worker settings' }, 500);
 
   const token = env.GITHUB_TOKEN;
   let finalUrl = imageUrl || '';
@@ -166,7 +185,7 @@ async function addPhoto(env, body) {
   }
 
   // Read current gallery, add photo, write back
-  const file = await readFile(token, GALLERY_FILE);
+  const file = await readFileAuth(token, GALLERY_FILE).catch(() => null);
   const data = file ? file.content : { photos: [] };
   const sha = file ? file.sha : undefined;
 
@@ -191,7 +210,8 @@ async function deletePhoto(env, body) {
   if (!photoId) return json({ error: 'photoId is required' }, 400);
 
   const token = env.GITHUB_TOKEN;
-  const file = await readFile(token, GALLERY_FILE);
+  if (!token) return json({ error: 'GITHUB_TOKEN secret is not set in Cloudflare Worker settings' }, 500);
+  const file = await readFileAuth(token, GALLERY_FILE);
   if (!file) return json({ error: 'Gallery file not found' }, 500);
 
   const data = file.content;
