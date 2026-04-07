@@ -86,11 +86,11 @@
       <div class="form-row">
         <label>Photo *</label>
         <div class="photo-picker" id="photoPicker">
-          <input type="file" accept="image/*,.heic,.heif" id="fileInput" capture="environment">
+          <input type="file" accept="image/*" id="fileInput">
           <div id="pickerContent">
             <div class="picker-icon">📷</div>
             <div class="picker-text">Tap to Take Photo or Choose from Library</div>
-            <div class="picker-sub">JPG, PNG — auto-compressed for fast loading</div>
+            <div class="picker-sub">JPG, PNG, or screenshots — iPhone users: screenshots work best!</div>
           </div>
         </div>
         <div class="photo-preview" id="photoPreview">
@@ -232,18 +232,30 @@ function compressImage(file) {
     reader.onload = function(e) {
       var img = new Image();
       img.onload = function() {
-        var w = img.width, h = img.height;
-        if (w > MAX_WIDTH) { h = Math.round(h * (MAX_WIDTH / w)); w = MAX_WIDTH; }
-        var canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-        resolve({ base64: dataUrl.split(',')[1], dataUrl: dataUrl });
+        try {
+          var w = img.width, h = img.height;
+          if (w > MAX_WIDTH) { h = Math.round(h * (MAX_WIDTH / w)); w = MAX_WIDTH; }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+          resolve({ base64: dataUrl.split(',')[1], dataUrl: dataUrl });
+        } catch(canvasErr) {
+          console.error('Canvas error:', canvasErr);
+          reject(new Error('Could not process image'));
+        }
       };
-      img.onerror = reject;
+      img.onerror = function(err) {
+        console.error('Image load error:', err);
+        reject(new Error('Image format not supported'));
+      };
       img.src = e.target.result;
     };
-    reader.onerror = reject;
+    reader.onerror = function(err) {
+      console.error('FileReader error:', err);
+      reject(new Error('Could not read file'));
+    };
     reader.readAsDataURL(file);
   });
 }
@@ -259,57 +271,60 @@ fileInput.addEventListener('change', async function() {
   var file = fileInput.files[0];
   if (!file) return;
   
+  console.log('Selected file:', file.name, file.type, file.size);
   pickerContent.innerHTML = '<div class="picker-text">Processing…</div>';
   
   try {
-    // Check if heic2any is available and if file needs conversion
-    var needsConversion = file.type === 'image/heic' || file.type === 'image/heif' || 
-                          file.name.toLowerCase().endsWith('.heic') || 
-                          file.name.toLowerCase().endsWith('.heif');
+    var originalFile = file;
     
-    if (needsConversion) {
-      if (typeof heic2any === 'undefined') {
-        // Library not loaded, try to process anyway
-        console.warn('heic2any not available, attempting to read file directly');
-      } else {
-        try {
-          pickerContent.innerHTML = '<div class="picker-text">Converting iPhone photo…</div>';
-          var convertedBlob = await heic2any({ 
-            blob: file, 
-            toType: 'image/jpeg', 
-            quality: 0.85 
-          });
-          // Handle both single blob and array of blobs
-          if (Array.isArray(convertedBlob)) {
-            convertedBlob = convertedBlob[0];
-          }
-          file = new File([convertedBlob], 
-            file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), 
-            { type: 'image/jpeg' }
-          );
-        } catch(convErr) {
-          console.error('HEIC conversion failed:', convErr);
-          alert('iPhone photo format not supported by this browser. Please:\n\n1. Take a screenshot instead, or\n2. Go to Settings > Camera > Formats and switch to "Most Compatible"');
-          resetPicker();
-          return;
+    // Check if it's HEIC/HEIF and try to convert
+    var isHEIC = file.type === 'image/heic' || file.type === 'image/heif' || 
+                 file.name.toLowerCase().endsWith('.heic') || 
+                 file.name.toLowerCase().endsWith('.heif');
+    
+    if (isHEIC && typeof heic2any !== 'undefined') {
+      try {
+        pickerContent.innerHTML = '<div class="picker-text">Converting…</div>';
+        var convertedBlob = await heic2any({ 
+          blob: file, 
+          toType: 'image/jpeg', 
+          quality: 0.8 
+        });
+        // Handle both single blob and array of blobs
+        if (Array.isArray(convertedBlob)) {
+          convertedBlob = convertedBlob[0];
         }
+        file = new File([convertedBlob], 
+          file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), 
+          { type: 'image/jpeg' }
+        );
+        console.log('Converted to:', file.type, file.size);
+      } catch(convErr) {
+        console.error('HEIC conversion failed:', convErr);
+        // Try to use original file anyway
+        file = originalFile;
       }
     }
     
+    // Try to compress and upload
     pickerContent.innerHTML = '<div class="picker-text">Compressing…</div>';
     var result = await compressImage(file);
+    console.log('Compression successful');
+    
     pendingImageBase64 = result.base64;
     previewImg.src = result.dataUrl;
     photoPreview.style.display = 'block';
     pickerDiv.style.display = 'none';
     document.getElementById('imageUrl').value = '';
   } catch(err) {
-    console.error('File processing error:', err);
-    var errorMsg = err.message || 'Could not process that image.';
-    if (errorMsg.includes('load failed') || errorMsg.includes('Failed to fetch')) {
-      errorMsg = 'Could not load the image. Try:\n• Taking a screenshot instead\n• Using a different photo\n• Checking your internet connection';
+    console.error('Upload failed:', err);
+    
+    // Provide helpful error message
+    if (isHEIC || err.message.includes('format')) {
+      alert('iPhone photos in HEIC format are not supported.\n\n📸 Quick fix:\n\n1. Go to iPhone Settings > Camera > Formats\n2. Switch to "Most Compatible"\n3. Or take a SCREENSHOT of your photo and upload that');
+    } else {
+      alert('Upload failed. Please try:\n• Taking a screenshot instead\n• Using Safari browser\n• Selecting a different photo');
     }
-    alert(errorMsg);
     resetPicker();
   }
 });
@@ -327,7 +342,7 @@ function resetPicker() {
   pickerContent.innerHTML =
     '<div class="picker-icon">📷</div>' +
     '<div class="picker-text">Tap to Take Photo or Choose from Library</div>' +
-    '<div class="picker-sub">JPG, PNG — auto-compressed for fast loading</div>';
+    '<div class="picker-sub">JPG, PNG, or screenshots — iPhone users: screenshots work best!</div>';
 }
 
 // ── URL toggle ──
