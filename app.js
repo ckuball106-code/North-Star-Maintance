@@ -228,8 +228,6 @@ const quoteSubmitBtn = document.getElementById('quoteSubmitBtn');
 const quoteModalFoot = document.getElementById('quoteModalFoot');
 const quoteSuccess = document.getElementById('quoteSuccess');
 const quoteSuccessMsg = document.getElementById('quoteSuccessMsg');
-const jobberContinueBtn = document.getElementById('jobberContinueBtn');
-const addToCalBtn = document.getElementById('addToCalBtn');
 const quoteDoneBtn = document.getElementById('quoteDoneBtn');
 
 // Note modal
@@ -529,13 +527,6 @@ function openQuoteModal(){
   quoteForm.style.display = '';
   quoteModalFoot.style.display = '';
   quoteSuccess.style.display = 'none';
-  if (jobberContinueBtn){
-    jobberContinueBtn.style.display = 'none';
-    jobberContinueBtn.href = '#';
-  }
-  if (quoteSuccessMsg){
-    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
-  }
   quoteSubmitBtn.disabled = false;
   quoteSubmitBtn.textContent = 'Send Request';
 
@@ -559,13 +550,6 @@ function closeQuoteModal(){
   quoteForm.reset();
   quoteModalFoot.style.display = '';
   quoteSuccess.style.display = 'none';
-  if (jobberContinueBtn){
-    jobberContinueBtn.style.display = 'none';
-    jobberContinueBtn.href = '#';
-  }
-  if (quoteSuccessMsg){
-    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
-  }
   quoteSubmitBtn.disabled = false;
   quoteSubmitBtn.textContent = 'Send Request';
 
@@ -846,7 +830,6 @@ modalGrid.addEventListener('click', e => {
 
   // For concrete work, open square footage modal
   if (menuKey === 'concrete'){
-    console.log('Opening sqft modal for concrete work:', itemName);
     openSqftModal(menuKey, menu, itemName, price);
     return;
   }
@@ -1327,34 +1310,6 @@ quoteCancel.addEventListener('click', closeQuoteModal);
 
 // Zoho Flow webhook URL - sends cart data to Zoho Invoice
 const ZOHO_FLOW_WEBHOOK_URL = 'https://spring-credit-c30a.ckuball106.workers.dev/';
-const USE_JOBBER_HANDOFF = false;
-// Legacy URLs - no longer used
-const ZAPIER_QUOTE_HOOK_URL = '';
-const JOBBER_REQUEST_FORM_URL = '';
-
-function buildJobberHandoffUrl(payload, cartText, total){
-  const base = String(JOBBER_REQUEST_FORM_URL || '').trim();
-  if (!base) return '';
-
-  const params = new URLSearchParams({
-    first_name: payload.first_name || '',
-    last_name: payload.last_name || '',
-    name: payload.name || '',
-    email: payload.email || '',
-    phone: payload.phone || '',
-    address: payload.address || '',
-    city: payload.city || '',
-    state: payload.state || '',
-    preferred_date: payload.preferred_date || '',
-    preferred_time: payload.preferred_time || '',
-    message: cartText || '',
-    details: cartText || '',
-    notes: payload.extra || '',
-    estimated_total: String(total || 0)
-  });
-
-  return `${base}${base.includes('?') ? '&' : '?'}${params.toString()}`;
-}
 
 function buildZapierPayload(total, cartText){
   const firstName = qFirstName.value || '';
@@ -1390,15 +1345,6 @@ function buildZapierPayload(total, cartText){
     line_item_categories: lineItemCategories,
     line_item_notes: lineItemNotes,
     line_item_addons: lineItemAddons,
-    // Always send fixed line item fields 1-12 so Zoho Flow can map them reliably.
-    ...Array.from({ length: 12 }).reduce((acc, _, i) => {
-      const item = lineItems[i];
-      const n = i + 1;
-      acc[`name_${n}`] = item ? `[${item.category}] ${item.service_name}` : '';
-      acc[`qty_${n}`] = item ? (item.quantity || 1) : '';
-      acc[`price_${n}`] = item ? (item.unit_price || 0) : '';
-      return acc;
-    }, {}),
     estimated_total: total,
     // Build pipe-separated line items for Zoho Flow from ALL items (up to 50)
     // Format: name|qty|price|note  (note is optional 4th field)
@@ -1424,69 +1370,14 @@ quoteForm.addEventListener('submit', (e) => {
     document.getElementById('cartData').value = `Estimated total: $${total}\n\n${cartText}`;
     document.getElementById('qName').value = `${qFirstName.value} ${qLastName.value}`.trim();
     payload = buildZapierPayload(total, cartText);
-
-    // Populate line item hidden fields for Formspree
     document.getElementById('hiddenTotal').value = payload.estimated_total || '';
-    for (let i = 1; i <= 12; i++) {
-      document.getElementById(`hiddenName${i}`).value = payload[`name_${i}`] || '';
-      document.getElementById(`hiddenQty${i}`).value = payload[`qty_${i}`] || '';
-      document.getElementById(`hiddenPrice${i}`).value = payload[`price_${i}`] || '';
-    }
-
-    // Build pipe-separated line items for Zoho Flow from ALL line items (no cap)
-    const lineItemParts = [];
-    const lineItems = buildCartLineItemsForZap();
-    for (const item of lineItems) {
-      if (item.service_name) {
-        lineItemParts.push(`[${item.category}] ${item.service_name}|${item.quantity || 1}|${item.unit_price || 0}`);
-      }
-    }
-    document.getElementById('hiddenLineItemsData').value = lineItemParts.join(';;');
+    document.getElementById('hiddenLineItemsData').value = payload.line_items_data || '';
   } catch (err) {
     console.error('Error populating hidden fields:', err);
   }
 
   quoteSubmitBtn.disabled = true;
   quoteSubmitBtn.textContent = 'Sending…';
-
-  if (USE_JOBBER_HANDOFF) {
-    const handoffUrl = buildJobberHandoffUrl(payload, cartText, total);
-    if (!handoffUrl) {
-      quoteSubmitBtn.disabled = false;
-      quoteSubmitBtn.textContent = 'Send Request';
-      alert('Jobber handoff is enabled, but JOBBER_REQUEST_FORM_URL is empty in app.js. Paste your Jobber request form URL and try again.');
-      return;
-    }
-
-    window.open(handoffUrl, '_blank', 'noopener,noreferrer');
-    if (jobberContinueBtn){
-      jobberContinueBtn.href = handoffUrl;
-      jobberContinueBtn.style.display = 'inline-block';
-    }
-    if (quoteSuccessMsg){
-      quoteSuccessMsg.textContent = 'Finish your request in the Jobber tab. If it did not open, click Continue in Jobber below.';
-    }
-
-    const calUrl = buildGCalUrl(
-      qDate.value, qTime.value,
-      `${qFirstName.value} ${qLastName.value}`.trim(), qAddress.value, qCity.value, qState.value,
-      cartText, total
-    );
-    addToCalBtn.href = calUrl;
-
-    quoteForm.style.display = 'none';
-    quoteModalFoot.style.display = 'none';
-    quoteSuccess.style.display = 'block';
-    return;
-  }
-
-  if (jobberContinueBtn) {
-    jobberContinueBtn.style.display = 'none';
-    jobberContinueBtn.href = '#';
-  }
-  if (quoteSuccessMsg) {
-    quoteSuccessMsg.textContent = "We'll reach out soon to confirm your appointment.";
-  }
 
   // Send to Formspree (primary — always works)
   const formspreeRequest = fetch(quoteForm.action, {
@@ -1511,14 +1402,6 @@ quoteForm.addEventListener('submit', (e) => {
     .then(([formspreeOk, zohoFlowOk]) => {
       // Consider successful if either destination accepted the quote.
       if (formspreeOk || zohoFlowOk) {
-        // Build Google Calendar link with all appointment details
-        const calUrl = buildGCalUrl(
-          qDate.value, qTime.value,
-          `${qFirstName.value} ${qLastName.value}`.trim(), qAddress.value, qCity.value, qState.value,
-          cartText, total
-        );
-        addToCalBtn.href = calUrl;
-
         // Show success screen, hide form
         quoteForm.style.display = 'none';
         quoteModalFoot.style.display = 'none';
@@ -1535,31 +1418,6 @@ quoteForm.addEventListener('submit', (e) => {
       alert('There was a problem sending your request. Please try again or call us at 507-920-6409.');
     });
 });
-
-// =============================
-// Google Calendar URL Builder
-// =============================
-function buildGCalUrl(date, time, name, address, city, state, cartSummary, total){
-  // Map time preference to start/end hours
-  let startHour = 8, endHour = 18;
-  if (String(time).includes('Morning'))   { startHour = 8;  endHour = 12; }
-  if (String(time).includes('Afternoon')) { startHour = 12; endHour = 17; }
-  if (String(time).includes('Evening'))  { startHour = 17; endHour = 19; }
-
-  const pad = n => String(n).padStart(2, '0');
-  const [year, month, day] = (date || '').split('-');
-  const startDt = `${year}${month}${day}T${pad(startHour)}0000`;
-  const endDt   = `${year}${month}${day}T${pad(endHour)}0000`;
-
-  const timeLabel = time || 'Any time';
-  const title     = encodeURIComponent('North Star Maintenance — Service Appointment');
-  const location  = encodeURIComponent([address, city, state].filter(Boolean).join(', '));
-  const details   = encodeURIComponent(
-    `Customer: ${name}\nTime Preference: ${timeLabel}\n\nServices:\n${cartSummary}\n\nEstimated Total: $${total}`
-  );
-
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDt}/${endDt}&details=${details}&location=${location}`;
-}
 
 // Done button — close modal and clear cart after successful quote
 quoteDoneBtn.addEventListener('click', () => {
