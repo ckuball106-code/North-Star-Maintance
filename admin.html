@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>Gallery Admin - North Star Maintenance</title>
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./styles.css">
   <style>
     #loginGate { max-width:400px; margin:120px auto; padding:30px; text-align:center; }
@@ -89,8 +88,8 @@
           <input type="file" accept="image/*" id="fileInput">
           <div id="pickerContent">
             <div class="picker-icon">📷</div>
-            <div class="picker-text">Tap to Take Photo or Choose from Library</div>
-            <div class="picker-sub">JPG, PNG, or screenshots — iPhone users: screenshots work best!</div>
+            <div class="picker-text">Tap to Upload Photo or Screenshot</div>
+            <div class="picker-sub">iPhone: Upload screenshots (not HEIC photos)</div>
           </div>
         </div>
         <div class="photo-preview" id="photoPreview">
@@ -271,60 +270,29 @@ fileInput.addEventListener('change', async function() {
   var file = fileInput.files[0];
   if (!file) return;
   
-  console.log('Selected file:', file.name, file.type, file.size);
-  pickerContent.innerHTML = '<div class="picker-text">Processing…</div>';
+  console.log('File selected:', file.name, file.type, file.size);
+  pickerContent.innerHTML = '<div class="picker-text">Loading…</div>';
+  
+  // Check if it's HEIC - don't even try to process it
+  var isHEIC = file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+  if (isHEIC) {
+    alert('⚠️ iPhone HEIC photos cannot be uploaded.\n\n✅ SOLUTION:\n\n1. Open the photo in Photos app\n2. Take a SCREENSHOT of it\n3. Upload the screenshot instead\n\nOr change Settings > Camera > Formats to "Most Compatible"');
+    resetPicker();
+    return;
+  }
   
   try {
-    var originalFile = file;
-    
-    // Check if it's HEIC/HEIF and try to convert
-    var isHEIC = file.type === 'image/heic' || file.type === 'image/heif' || 
-                 file.name.toLowerCase().endsWith('.heic') || 
-                 file.name.toLowerCase().endsWith('.heif');
-    
-    if (isHEIC && typeof heic2any !== 'undefined') {
-      try {
-        pickerContent.innerHTML = '<div class="picker-text">Converting…</div>';
-        var convertedBlob = await heic2any({ 
-          blob: file, 
-          toType: 'image/jpeg', 
-          quality: 0.8 
-        });
-        // Handle both single blob and array of blobs
-        if (Array.isArray(convertedBlob)) {
-          convertedBlob = convertedBlob[0];
-        }
-        file = new File([convertedBlob], 
-          file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), 
-          { type: 'image/jpeg' }
-        );
-        console.log('Converted to:', file.type, file.size);
-      } catch(convErr) {
-        console.error('HEIC conversion failed:', convErr);
-        // Try to use original file anyway
-        file = originalFile;
-      }
-    }
-    
-    // Try to compress and upload
-    pickerContent.innerHTML = '<div class="picker-text">Compressing…</div>';
+    pickerContent.innerHTML = '<div class="picker-text">Processing…</div>';
     var result = await compressImage(file);
-    console.log('Compression successful');
-    
     pendingImageBase64 = result.base64;
     previewImg.src = result.dataUrl;
     photoPreview.style.display = 'block';
     pickerDiv.style.display = 'none';
     document.getElementById('imageUrl').value = '';
+    console.log('Success!');
   } catch(err) {
-    console.error('Upload failed:', err);
-    
-    // Provide helpful error message
-    if (isHEIC || err.message.includes('format')) {
-      alert('iPhone photos in HEIC format are not supported.\n\n📸 Quick fix:\n\n1. Go to iPhone Settings > Camera > Formats\n2. Switch to "Most Compatible"\n3. Or take a SCREENSHOT of your photo and upload that');
-    } else {
-      alert('Upload failed. Please try:\n• Taking a screenshot instead\n• Using Safari browser\n• Selecting a different photo');
-    }
+    console.error('Upload error:', err);
+    alert('❌ Upload failed.\n\n✅ Try this:\n\n1. Take a SCREENSHOT of your photo\n2. Upload the screenshot\n\nScreenshots always work!');
     resetPicker();
   }
 });
@@ -341,8 +309,8 @@ function resetPicker() {
   pickerDiv.style.display = 'block';
   pickerContent.innerHTML =
     '<div class="picker-icon">📷</div>' +
-    '<div class="picker-text">Tap to Take Photo or Choose from Library</div>' +
-    '<div class="picker-sub">JPG, PNG, or screenshots — iPhone users: screenshots work best!</div>';
+    '<div class="picker-text">Tap to Upload Photo or Screenshot</div>' +
+    '<div class="picker-sub">iPhone: Upload screenshots (not HEIC photos)</div>';
 }
 
 // ── URL toggle ──
