@@ -78,6 +78,30 @@
   <button class="btn primary" style="width:100%;padding:16px;font-size:16px" onclick="checkPassword()">Log In</button>
 </div>
 
+<!-- Token Setup Screen (shown once per device) -->
+<div class="admin-container" id="tokenSetup" style="display:none;">
+  <div style="background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; max-width:600px; margin:0 auto;">
+    <h2 style="margin-bottom:8px; text-align:center;">One-Time Setup</h2>
+    <p class="muted" style="text-align:center; margin-bottom:20px;">You need a GitHub token so photos can be saved to your website. This only needs to be done once on this device.</p>
+
+    <div style="background:rgba(201,154,74,.1); border:1px solid rgba(201,154,74,.3); border-radius:8px; padding:16px; margin-bottom:20px;">
+      <h3 style="margin:0 0 12px; color:var(--brand2); font-size:15px;">How to get your token:</h3>
+      <ol style="margin:0; padding-left:20px;">
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:var(--brand2); font-weight:600;">github.com/settings/tokens</a></li>
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Tap <strong>"Generate new token"</strong></li>
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Name it <strong>Gallery Admin</strong></li>
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Under Repository access → <strong>Only select repositories</strong> → pick <strong>North-Star-Maintance</strong></li>
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Under Permissions → Contents → set to <strong>Read and write</strong></li>
+        <li style="margin:8px 0; color:var(--muted); font-size:14px; line-height:1.5;">Tap <strong>Generate token</strong>, then copy and paste it below</li>
+      </ol>
+    </div>
+
+    <div id="tokenError" style="color:#ff3b30; font-size:14px; display:none; margin-bottom:12px; text-align:center;"></div>
+    <input type="text" id="tokenInput" placeholder="Paste your token here (starts with github_pat_)" style="width:100%; padding:16px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--text); font-size:15px; box-sizing:border-box; margin-bottom:12px;">
+    <button class="btn primary" style="width:100%; padding:16px; font-size:16px;" onclick="saveToken()">Save Token &amp; Continue</button>
+  </div>
+</div>
+
 <!-- Admin Panel (hidden until authenticated) -->
 <div class="admin-container" id="adminPanel">
   <div class="admin-header">
@@ -191,8 +215,13 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
 function checkPassword() {
   if (document.getElementById('passwordInput').value === ADMIN_PASSWORD) {
     document.getElementById('loginGate').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-    loadPhotos();
+    // Check if we have a token — if not, show setup screen
+    if (localStorage.getItem('gh_gallery_token')) {
+      document.getElementById('adminPanel').style.display = 'block';
+      loadPhotos();
+    } else {
+      document.getElementById('tokenSetup').style.display = 'block';
+    }
   } else {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('passwordInput').value = '';
@@ -200,22 +229,48 @@ function checkPassword() {
   }
 }
 
+// ── Token setup screen ──
+async function saveToken() {
+  var token = document.getElementById('tokenInput').value.trim();
+  var errEl = document.getElementById('tokenError');
+  if (!token) { errEl.textContent = 'Please paste your token above.'; errEl.style.display = 'block'; return; }
+  // Verify token works
+  errEl.style.display = 'none';
+  showSaving('Verifying token…');
+  try {
+    var resp = await fetch(ghUrl(GALLERY_FILE) + '?ref=' + BRANCH, {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    hideSaving();
+    if (resp.ok) {
+      localStorage.setItem('gh_gallery_token', token);
+      document.getElementById('tokenSetup').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadPhotos();
+    } else if (resp.status === 401 || resp.status === 403) {
+      errEl.textContent = 'That token didn\u2019t work. Make sure you copied the whole thing and that Contents is set to Read and write.';
+      errEl.style.display = 'block';
+    } else {
+      errEl.textContent = 'Something went wrong (status ' + resp.status + '). Try again.';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    hideSaving();
+    errEl.textContent = 'Network error. Check your connection and try again.';
+    errEl.style.display = 'block';
+  }
+}
+
 // ── GitHub Token ──
 function getToken() {
   var token = localStorage.getItem('gh_gallery_token');
   if (!token) {
-    token = prompt(
-      'One-time setup: Paste a GitHub Personal Access Token.\n\n' +
-      '1. Go to github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens\n' +
-      '2. Click "Generate new token"\n' +
-      '3. Name: Gallery Admin\n' +
-      '4. Repository access → Only select repositories → North-Star-Maintance\n' +
-      '5. Permissions → Contents → Read and write\n' +
-      '6. Generate token and paste here'
-    );
-    if (token) localStorage.setItem('gh_gallery_token', token.trim());
+    // Token missing — bounce back to setup screen
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('tokenSetup').style.display = 'block';
+    return null;
   }
-  return token ? token.trim() : null;
+  return token.trim();
 }
 
 // ── GitHub API helpers ──
