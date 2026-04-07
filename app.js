@@ -676,6 +676,8 @@ function openSqftModal(menuKey, menu, itemName, price){
     ? `Rate: $${sqftRate}/sq ft. Enter approximate square footage to calculate pricing.`
     : 'Approximate square footage helps us give you a more accurate estimate.';
   sqftInput.value = '';
+  const sqftNoteEl = document.getElementById('sqftNote');
+  if (sqftNoteEl) sqftNoteEl.value = '';
   sqftModal.style.display = 'block';
   sqftModal.classList.add('open');
   modalBackdrop.classList.add('open');
@@ -1690,6 +1692,9 @@ if (sqftSkip) sqftSkip.addEventListener('click', () => {
   if (!ctx) return;
   const fallbackPrice = (typeof ctx.sqftRate === 'number') ? null : ctx.price;
   addItem(ctx.menu.category, ctx.itemName, fallbackPrice);
+  const sqftNoteEl = document.getElementById('sqftNote');
+  const noteVal = sqftNoteEl ? sqftNoteEl.value.trim() : '';
+  if (noteVal) setItemNote(ctx.menu.category, ctx.itemName, noteVal);
   closeSqftModal();
   closeModal();
 });
@@ -1713,6 +1718,9 @@ if (sqftConfirm) sqftConfirm.addEventListener('click', () => {
   }
   
   addItem(ctx.menu.category, itemName, finalPrice);
+  const sqftNoteEl = document.getElementById('sqftNote');
+  const noteVal = sqftNoteEl ? sqftNoteEl.value.trim() : '';
+  if (noteVal) setItemNote(ctx.menu.category, itemName, noteVal);
   closeSqftModal();
   closeModal();
 });
